@@ -11,7 +11,6 @@ import { faCreditCard } from '@fortawesome/free-solid-svg-icons/faCreditCard';
 import { faSquareMinus } from '@fortawesome/free-solid-svg-icons/faSquareMinus';
 import { faSquarePlus } from '@fortawesome/free-solid-svg-icons/faSquarePlus';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import NewTransaction from './transactions/newTransaction';
 const BOTTOM_APPBAR_HEIGHT = 80;
 const MEDIUM_FAB_HEIGHT = 56;
 
@@ -33,13 +32,13 @@ const BottomBar = (props) => {
 
   return (
     <>
-    <NewTransaction 
+    {/* <NewTransaction 
       type={modalType} 
       setCurrentModal={setModal} 
       currentModal={modal} 
       fetchData={props.fetchData}  
       fetchCards={props.fetchCards}  
-    />
+    /> */}
     <Appbar
       style={[
         styles.bottom,

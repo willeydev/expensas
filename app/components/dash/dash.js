@@ -1,117 +1,128 @@
-import { useState } from "react";
-import { FlatList, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Theme from "../../theme";
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
+
+import Theme from '../../theme';
+import AppBar from '../AppBar';
+import BottomBar from '../BottomBar';
+import NewBank from '../banks/newBank';
+import Cartoes from './Cartoes';
+import Contas from './Contas';
+import Resumo from './Resumo';
+
+import { getMonth, getYear } from '../../utils/data';
+import NewCreditCard from '../cards/newCreditCard';
+
 
 const Dash = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(null);
+  
+  const [modal, setModal] = useState('');
+  const [modalType, setModalType] = useState('');
+  const [cardSelectedUuid, setCardSelectedUuid] = useState('');
+  const [filteredMonth, setFilteredMonth] = useState(getMonth('string'));
+  const [filteredYear, setFilteredYear] = useState(getYear('string'));
+  
+  const [stateTotalPredictedReceipt, setStateTotalPredictedReceipt] = useState('0,00');
+  const [stateTotalPredictedExpense, setStateTotalPredictedExpense] = useState('0,00');
+  const [balancePredicted, setBalancePredicted] = useState('0,00');
+  
+  const [stateTotalEffectedReceipt, setStateTotalEffectedReceipt] = useState('0,00');
+  const [stateTotalEffectedExpense, setStateTotalEffectedExpense] = useState('0,00');
+  const [balanceEffected, setBalanceEffected] = useState('0,00');
+    
+  const [cards, setCards] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  
+  const [modalSignature, setModalSignature] = useState(false);
 
-  const openModal = (type) => {
+  const openNewBank = (type) => { 
+    setModalSignature(true);
+    return;
+  }
+  const openNewCreditCard = (type) => {
+    setModal('new-credit-card')
     setModalType(type);
-    setModalVisible(true);
-  };
+  }
+  
+  const openNewPayment = (type, uuid) => {
+    setModal('new-payment-card')
+    setModalType(type);
+    setCardSelectedUuid(uuid);
+  }
 
-  const closeModal = () => {
-    setModalVisible(false);
-    setModalType(null);
-  };
+  useEffect(() => {
+    
+    if(filteredMonth && filteredYear) {
+      fetchData();
+    } 
 
-  return (
-    <View style={Theme.MainView}>
-      {/* -------- Card 1: Receitas e Despesas -------- */}
-      <View style={[Theme.ElementoCardGeral, { margin: 10, padding: 15, backgroundColor: Theme.Colors.White, elevation: 3 }]}>
-        <Text style={Theme.CardFontPrimary}>Receitas e Despesas</Text>
-        <View style={{ marginTop: 10 }}>
-          <Text>Efetivado: Receita R$ 5000 | Despesa R$ 3500</Text>
-          <Text>Previsto: Receita R$ 6000 | Despesa R$ 4000</Text>
-          <Text style={{ marginTop: 5, fontWeight: "bold" }}>Balanço: R$ 1500 (Efetivado)</Text>
-          <Text style={{ fontWeight: "bold" }}>Balanço Previsto: R$ 2000</Text>
-        </View>
-      </View>
+    fetchCards();
+    fetchAccounts();
+  }, [filteredMonth, filteredYear]);
 
-      {/* -------- Card 2: Cartões -------- */}
-      <View style={[Theme.ElementoCardGeral, { margin: 10, padding: 15, backgroundColor: Theme.Colors.White, elevation: 3 }]}>
-        <Text style={Theme.CardFontPrimary}>Cartões</Text>
-        <FlatList
-          data={[
-            { id: 1, nome: "Nubank", limite: 5000, usado: 1500 },
-            { id: 2, nome: "Itaú", limite: 3000, usado: 500 },
-          ]}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => {
-            const disponivel = item.limite - item.usado;
-            const percent = (disponivel / item.limite) * 100;
-            return (
-              <View style={{ marginVertical: 10 }}>
-                <Text>{item.nome} - Disponível: R$ {disponivel}</Text>
-                <View style={{ height: 8, backgroundColor: Theme.Colors.Gray2, borderRadius: 4, marginTop: 5 }}>
-                  <View style={{ width: `${percent}%`, backgroundColor: Theme.Colors.Green1, height: 8, borderRadius: 4 }} />
-                </View>
-              </View>
-            );
-          }}
-        />
-      </View>
-
-      {/* -------- Card 3: Contas -------- */}
-      <View style={[Theme.ElementoCardGeral, { margin: 10, padding: 15, backgroundColor: Theme.Colors.White, elevation: 3 }]}>
-        <Text style={Theme.CardFontPrimary}>Contas</Text>
-        {["Conta Corrente", "Poupança", "Investimentos"].map((conta, index) => (
-          <Text key={index} style={{ marginTop: 5 }}>{conta}</Text>
-        ))}
-      </View>
-
-      {/* -------- Menu Inferior -------- */}
-      <View style={Theme.BtnHover.bottom}>
-        <View style={{ flexDirection: "row", justifyContent: "space-around", padding: 10 }}>
-          <TouchableOpacity style={{ alignItems: "center" }} onPress={() => openModal("despesa")}>
-            <Text style={{ color: Theme.Colors.Green1 }}>+ Despesa</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ alignItems: "center" }} onPress={() => openModal("despesaCartao")}>
-            <Text style={{ color: Theme.Colors.Green1 }}>+ Despesa Cartão</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ alignItems: "center" }} onPress={() => openModal("receita")}>
-            <Text style={{ color: Theme.Colors.Green1 }}>+ Receita</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ alignItems: "center" }}>
-            <Text style={{ color: Theme.Colors.Green1 }}>Listagem</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* -------- Modal -------- */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={Theme.ModalOpacity} />
-        <View style={Theme.ModalBody}>
-          <Text style={Theme.ModalTitle}>
-            {modalType === "despesa" && "Adicionar Despesa"}
-            {modalType === "despesaCartao" && "Adicionar Despesa de Cartão"}
-            {modalType === "receita" && "Adicionar Receita"}
-          </Text>
-
-          {/* Exemplo de formulário simples */}
-          <TextInput
-            placeholder="Descrição"
-            style={Theme.TextInput}
-            placeholderTextColor={Theme.Colors.FontColor1}
-          />
-          <TextInput
-            placeholder="Valor"
-            style={Theme.TextInput}
-            placeholderTextColor={Theme.Colors.FontColor1}
-            keyboardType="numeric"
-          />
-
-          <TouchableOpacity style={[Theme.ModalButtonPrimary, { marginTop: 15, padding: 12, borderRadius: 10 }]} onPress={closeModal}>
-            <Text style={{ color: "white", textAlign: "center" }}>Salvar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={{ marginTop: 10 }} onPress={closeModal}>
-            <Text style={{ textAlign: "center", color: Theme.Colors.Red1 }}>Cancelar</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
+  useFocusEffect(
+    useCallback(() => {
+      fetchAll();
+      // Se precisar limpar algo, pode retornar uma função de cleanup
+      return () => {};
+    }, [])
   );
+
+  const fetchData = () => {
+    return {};
+  }
+
+  const fetchCards = () => {
+    return {};
+  }
+
+  const fetchAccounts = () => {
+    return {};
+  }
+
+  const fetchAll = () =>{
+    fetchData();
+    fetchCards();
+    fetchAccounts();
+
+  }
+
+  return <>
+
+    <NewBank 
+      FontAwesomeIcon={FontAwesomeIcon}
+      type={modalType} 
+      setCurrentModal={setModal} 
+      currentModal={modal} 
+      fetchData={fetchAll}
+    />  
+    <NewCreditCard
+      FontAwesomeIcon={FontAwesomeIcon}
+      type={modalType} 
+      setCurrentModal={setModal} 
+      currentModal={modal} 
+      fetchData={fetchAll}
+    /> 
+    <AppBar fetchData={fetchData} />
+    <ScrollView style={{paddingBottom: 100}}>
+      <View style={Theme.MainView}>
+          <Resumo 
+            FontAwesomeIcon={FontAwesomeIcon} 
+            balancePredicted={balancePredicted}
+            totalPredictedReceipt={stateTotalPredictedReceipt}
+            totalPredictedExpense={stateTotalPredictedExpense}
+
+            totalEffectedReceipt={stateTotalEffectedReceipt}
+            totalEffectedExpense={stateTotalEffectedExpense}
+            balanceEffected={balanceEffected}
+          ></Resumo>
+          <Cartoes openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon} openNewCreditCard={() => openNewCreditCard('create')}></Cartoes>
+          <Contas accounts={accounts} FontAwesomeIcon={FontAwesomeIcon} openNewBank={() => openNewBank('create')}></Contas>
+      </View>
+    </ScrollView>
+    <BottomBar fetchCards={fetchCards} fetchData={fetchData}/>
+  </>
 };
 
 export default Dash;
