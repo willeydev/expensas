@@ -12,7 +12,6 @@ const NewCreditCard = (props) => {
   const [dueDay, setDueDay] = useState('');
   const [closeDay, setCloseDay] = useState('');
   const [selectedFlag, setSelectedFlag] = useState('');
-  const [validateForm, setValidateForm] = useState(false);
 
   flags = [
     { label: 'Visa', value: 'visa' },
@@ -22,6 +21,39 @@ const NewCreditCard = (props) => {
     { label: 'Hipercard', value: 'hipercard' },
     { label: 'Alelo', value: 'alelo' },
   ]
+
+  const action = async () => {
+    if (!validateForm()) {
+      console.log('invalid');
+      return false;
+    }
+    console.log('send data');
+  }
+
+  const validateForm = () => {
+    console.log(closeDay);
+    if(name.length < 3) {
+      return false;
+    }
+    
+    if(limit.length < 1) {
+      return false;
+    }
+
+    if(dueDay.length < 1) {
+      return false;
+    }
+
+    if(closeDay.length < 1) {
+      return false;
+    }
+
+    if(selectedFlag.length < 1) {
+      return false;
+    }
+
+    return true;
+  }
   
   if(props.modal === false) {
     return null;
@@ -44,22 +76,21 @@ const NewCreditCard = (props) => {
                 placeholderTextColor={Theme.Colors.FontColor1}
                 value={name}
                 onChangeText={name => setName(name)}
-                onSubmitEditing={() => inputRef2.current?.focus()}
             />
-            { validateForm && name?.length < 3 ? <HelperText type="error">
+            { name?.length < 3 ? <HelperText type="error">
               Digite ao menos 3 caracteres.
             </HelperText> : null}
             <TextInput
-                //ref={inputRef2}
+                
                 keyboardType="numeric"
                 style={[Theme.TextInput, {marginLeft: 18}]}
                 label="Limite inicial"
                 placeholder="Limite inicial"
                 placeholderTextColor={Theme.Colors.FontColor1}
                 value={limit}
-                onChangeText={limit => defLimit(limit)}
+                onChangeText={limit => setLimit(limit)}
             />
-            { validateForm && limit?.length == 0 ? <HelperText type="error">
+            { limit?.length < 1 ? <HelperText type="error">
               Digite o limite.
             </HelperText> : null}
 
@@ -110,8 +141,8 @@ const NewCreditCard = (props) => {
                   } : null
                 }
             />
-            { validateForm && closeDay?.length == 0 ? <HelperText type="error">
-              Selecione o dia de fechamento.
+            { dueDay?.length == 0 ? <HelperText type="error">
+              Selecione o dia de vencimento.
             </HelperText> : null}
             
             <InputSelect 
@@ -161,7 +192,7 @@ const NewCreditCard = (props) => {
                   } : null
                 }
             />
-            { validateForm && closeDay?.length == 0 ? <HelperText type="error">
+            { closeDay?.length < 1 ? <HelperText type="error">
               Selecione o dia de fechamento.
             </HelperText> : null}
 
@@ -179,7 +210,7 @@ const NewCreditCard = (props) => {
                   } : null
                 }
             />
-            { validateForm && selectedFlag?.length == 0 ? <HelperText type="error">
+            { selectedFlag?.length == 0 ? <HelperText type="error">
               Escolha a bandeira.
             </HelperText> : null}
 
