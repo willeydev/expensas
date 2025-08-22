@@ -5,17 +5,14 @@ import Theme from '../../theme';
 import InputSelect from '../inputSelect';
 
 const NewCreditCard = (props) => {
-  const [visible, setVisible] = useState(true);
 
+  
   const [name, setName] = useState('');
   const [limit, setLimit] = useState('');
   const [dueDay, setDueDay] = useState('');
   const [closeDay, setCloseDay] = useState('');
   const [selectedFlag, setSelectedFlag] = useState('');
   const [validateForm, setValidateForm] = useState(false);
-  const [modalTitle, setModalTitle] = useState();
-
-  const modalId = 'new-credit-card';
 
   flags = [
     { label: 'Visa', value: 'visa' },
@@ -25,48 +22,20 @@ const NewCreditCard = (props) => {
     { label: 'Hipercard', value: 'hipercard' },
     { label: 'Alelo', value: 'alelo' },
   ]
-
-  const closeModal = () => {
-    setValidateForm(false);
-    props.setCurrentModal('');
-  }
-
-  const setInfo = () => {
-    switch(props.type) {
-      case 'create': 
-      setModalTitle('Novo Cartão'); 
-      break;
-
-      case 'edit': 
-      setModalTitle('Editar Cartão'); 
-      fillData();
-      break;
-    }
-  }
-
-
-  fillData = () => {
   
-  }
-
-
-  const action = () => {
-    closeModal();
-  }
-
-  if(props.currentModal != modalId) {
+  if(props.modal === false) {
     return null;
   }
-  
+
   return (
     <>
-        <View style={Theme.ModalOpacity} onClick={closeModal}>
+        <View style={Theme.ModalOpacity}>
         </View>
         <View style={[Theme.ModalBody, {minHeight: '83%', maxHeight: '83%',}]}>
             <Text style={[Theme.ModalTitle, {color: Theme.Colors.FontColor1}]}>Novo Cartão</Text>
             <Divider/>
             <ScrollView>
-            
+
             <TextInput
                 autoFocus
                 style={[Theme.TextInput, {marginLeft: 18}]}
@@ -80,9 +49,8 @@ const NewCreditCard = (props) => {
             { validateForm && name?.length < 3 ? <HelperText type="error">
               Digite ao menos 3 caracteres.
             </HelperText> : null}
-            
             <TextInput
-                ref={inputRef2}
+                //ref={inputRef2}
                 keyboardType="numeric"
                 style={[Theme.TextInput, {marginLeft: 18}]}
                 label="Limite inicial"
@@ -216,7 +184,7 @@ const NewCreditCard = (props) => {
             </HelperText> : null}
 
             <View style={{marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
-                <Button style={[Theme.ModalInput, Theme.ModalButtonSecondary]} textColor={Theme.Colors.FontColor1} mode="outlined" onPress={closeModal}>
+                <Button style={[Theme.ModalInput, Theme.ModalButtonSecondary]} textColor={Theme.Colors.FontColor1} mode="outlined" onPress={() => props.setModal(false)}>
                     Cancelar
                 </Button>
                 <Button style={[Theme.ModalInput, Theme.ModalButtonPrimary]} mode="contained" onPress={() => action()}>

@@ -38,7 +38,9 @@ const Cartoes = (props) => {
             style={[styles.button, isHovered && styles.buttonHovered]}
             onPressIn={() => setIsHovered(true)}
             onPressOut={() => setIsHovered(false)}
-            onPress={() => props.openNewCreditCard()}
+            onPress={() => {
+              props.setModal(true);
+            }}
         >
         <View style={[Theme.TitleCard, Theme.TitleCardRight]} >
           
