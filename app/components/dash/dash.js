@@ -11,14 +11,15 @@ import Cartoes from './Cartoes';
 import Contas from './Contas';
 import Resumo from './Resumo';
 
+import { getDashboard } from '../../services//dashService';
 import { getMonth, getYear } from '../../utils/data';
 import NewCreditCard from '../cards/newCreditCard';
-
 
 const Dash = () => {
   
   const [modalCard, setModalCard] = useState(false);
   const [modalBank, setModalBank] = useState(false);
+  const [dashData, setDashData] = useState({});
   const [modalType, setModalType] = useState('');
   const [cardSelectedUuid, setCardSelectedUuid] = useState('');
   const [filteredMonth, setFilteredMonth] = useState(getMonth('string'));
@@ -60,6 +61,7 @@ const Dash = () => {
 
     fetchCards();
     fetchAccounts();
+    
   }, [filteredMonth, filteredYear]);
 
   useFocusEffect(
@@ -70,8 +72,13 @@ const Dash = () => {
     }, [])
   );
 
-  const fetchData = () => {
-    return {};
+  const fetchData = async () => {
+    const response = await getDashboard({
+      startDate: filteredYear+'-'+filteredMonth+'-01',
+      endDate: filteredYear+'-'+filteredMonth+'-31',
+    });
+    
+    setDashData(response.data);
   }
 
   const fetchCards = () => {
@@ -106,15 +113,16 @@ const Dash = () => {
     <AppBar fetchData={fetchData} />
     <ScrollView style={{paddingBottom: 100}}>
       <View style={Theme.MainView}>
+          
           <Resumo 
             FontAwesomeIcon={FontAwesomeIcon} 
-            balancePredicted={balancePredicted}
-            totalPredictedReceipt={stateTotalPredictedReceipt}
-            totalPredictedExpense={stateTotalPredictedExpense}
+            balancePredicted={new Intl.NumberFormat("pr-BR").format(dashData.balance_preview)}
+            totalPredictedReceipt={new Intl.NumberFormat("pr-BR").format(dashData.receipt_preview)}
+            totalPredictedExpense={new Intl.NumberFormat("pr-BR").format(dashData.expense_preview)}
 
-            totalEffectedReceipt={stateTotalEffectedReceipt}
-            totalEffectedExpense={stateTotalEffectedExpense}
-            balanceEffected={balanceEffected}
+            totalEffectedReceipt={new Intl.NumberFormat("pr-BR").format(dashData.receipt_effected)}
+            totalEffectedExpense={new Intl.NumberFormat("pr-BR").format(dashData.expense_effected)}
+            balanceEffected={ new Intl.NumberFormat("pr-BR").format(dashData.balance_effected)}
           ></Resumo>
           <Cartoes setModal={setModalCard} openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon} openNewCreditCard={() => openNewCreditCard('create')}></Cartoes>
           <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon} openNewBank={() => openNewBank('create')}></Contas>

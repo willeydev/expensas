@@ -9,10 +9,11 @@ const getUser = async () => {
 };
 
 
-const isLoggedIn = async () => {
-  return await getUser() ? true : false
+const getToken = () => {
+  return '5|GYQ8sRNWRbLtGT53yfXoUFTrdYldFZO2MrAmzQ1Wf01df425';
 }
 
 module.exports = {
-    getUser
+    getUser,
+    getToken
 }
