@@ -20,32 +20,12 @@ const Dash = () => {
   const [modalCard, setModalCard] = useState(false);
   const [modalBank, setModalBank] = useState(false);
   const [dashData, setDashData] = useState({});
-  const [modalType, setModalType] = useState('');
-  const [cardSelectedUuid, setCardSelectedUuid] = useState('');
+
   const [filteredMonth, setFilteredMonth] = useState(getMonth('string'));
   const [filteredYear, setFilteredYear] = useState(getYear('string'));
-  
-  const [stateTotalPredictedReceipt, setStateTotalPredictedReceipt] = useState('0,00');
-  const [stateTotalPredictedExpense, setStateTotalPredictedExpense] = useState('0,00');
-  const [balancePredicted, setBalancePredicted] = useState('0,00');
-  
-  const [stateTotalEffectedReceipt, setStateTotalEffectedReceipt] = useState('0,00');
-  const [stateTotalEffectedExpense, setStateTotalEffectedExpense] = useState('0,00');
-  const [balanceEffected, setBalanceEffected] = useState('0,00');
     
   const [cards, setCards] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  
-  const [modalSignature, setModalSignature] = useState(false);
-
-  const openNewBank = (type) => { 
-    setModalSignature(true);
-    return;
-  }
-  const openNewCreditCard = (type) => {
-    setModal('new-credit-card')
-    setModalType(type);
-  }
   
   const openNewPayment = (type, uuid) => {
     setModal('new-payment-card')
@@ -124,8 +104,8 @@ const Dash = () => {
             totalEffectedExpense={new Intl.NumberFormat("pr-BR").format(dashData.expense_effected)}
             balanceEffected={ new Intl.NumberFormat("pr-BR").format(dashData.balance_effected)}
           ></Resumo>
-          <Cartoes setModal={setModalCard} openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon} openNewCreditCard={() => openNewCreditCard('create')}></Cartoes>
-          <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon} openNewBank={() => openNewBank('create')}></Contas>
+          <Cartoes setModal={setModalCard} openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon}></Cartoes>
+          <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon}></Contas>
       </View>
     </ScrollView>
     <BottomBar fetchCards={fetchCards} fetchData={fetchData}/>
