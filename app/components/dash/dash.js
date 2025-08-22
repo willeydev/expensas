@@ -17,7 +17,8 @@ import NewCreditCard from '../cards/newCreditCard';
 
 const Dash = () => {
   
-  const [modal, setModal] = useState(false);
+  const [modalCard, setModalCard] = useState(false);
+  const [modalBank, setModalBank] = useState(false);
   const [modalType, setModalType] = useState('');
   const [cardSelectedUuid, setCardSelectedUuid] = useState('');
   const [filteredMonth, setFilteredMonth] = useState(getMonth('string'));
@@ -92,15 +93,14 @@ const Dash = () => {
 
     <NewBank 
       FontAwesomeIcon={FontAwesomeIcon}
-      type={modalType} 
-      setCurrentModal={setModal} 
-      currentModal={modal} 
+      setModal={setModalBank} 
+      modal={modalBank} 
       fetchData={fetchAll}
     />  
     <NewCreditCard
       FontAwesomeIcon={FontAwesomeIcon}
-      modal={modal}
-      setModal={setModal}
+      modal={modalCard}
+      setModal={setModalCard}
       fetchData={fetchAll}
     /> 
     <AppBar fetchData={fetchData} />
@@ -116,8 +116,8 @@ const Dash = () => {
             totalEffectedExpense={stateTotalEffectedExpense}
             balanceEffected={balanceEffected}
           ></Resumo>
-          <Cartoes setModal={setModal} openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon} openNewCreditCard={() => openNewCreditCard('create')}></Cartoes>
-          <Contas accounts={accounts} FontAwesomeIcon={FontAwesomeIcon} openNewBank={() => openNewBank('create')}></Contas>
+          <Cartoes setModal={setModalCard} openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon} openNewCreditCard={() => openNewCreditCard('create')}></Cartoes>
+          <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon} openNewBank={() => openNewBank('create')}></Contas>
       </View>
     </ScrollView>
     <BottomBar fetchCards={fetchCards} fetchData={fetchData}/>

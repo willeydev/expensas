@@ -11,42 +11,13 @@ const NewBank = (props) => {
   const [validateForm, setValidateForm] = useState(false);
   const [modalTitle, setModalTitle] = useState();
 
-  const modalId = 'new-account'; 
-
-  const setInfo = () => {
-    switch(props.type) {
-      case 'create': 
-      setModalTitle('Nova Conta'); 
-      break;
-
-      case 'edit': 
-      setModalTitle('Editar Conta'); 
-      fillData();
-      break;
-    }
-  }
-
-  fillData = () => {
-    setName(props.choosedItem?.name);
-    setSelectedBank(props.choosedItem?.selectedBank);
-  }
-
-  const closeModal = () => {
-    props.setCurrentModal('');
-  }
-
-  const action = () => {
-    closeModal();
-
-  }
-
-  if(props.currentModal != modalId) {
+  if(props.modal !== true) {
     return null;
   }
-  
+
   return (
     <>
-        <View style={Theme.ModalOpacity} onClick={closeModal}>
+        <View style={Theme.ModalOpacity}>
         </View>
         <View style={Theme.ModalBody}>
             <Text style={[Theme.ModalTitle, {color: Theme.Colors.FontColor1}]}>{modalTitle}</Text>
@@ -88,7 +59,7 @@ const NewBank = (props) => {
               Escolha uma instituição.
             </HelperText> : null}
             <View style={{marginTop: 20, justifyContent: 'center', alignItems: 'center'}}>
-                <Button style={[Theme.ModalInput, Theme.ModalButtonSecondary]} textColor={Theme.Colors.FontColor1} mode="outlined" onPress={closeModal}>
+                <Button style={[Theme.ModalInput, Theme.ModalButtonSecondary]} textColor={Theme.Colors.FontColor1} mode="outlined" onPress={() => props.setModal(false)}>
                     Cancelar
                 </Button>
                 <Button style={[Theme.ModalInput, Theme.ModalButtonPrimary]} mode="contained" onPress={() => action()}>
