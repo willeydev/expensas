@@ -11,6 +11,17 @@ async function createCreditCard(data) {
     return response;
 }
 
+async function getCards(limit, offset) {
+    const response = await axios.get(`${API_URL}/credit_cards?limit=${limit}&offset=${offset}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    });
+    
+    return response;
+}
+
 module.exports = {
-    createCreditCard
+    createCreditCard,
+    getCards
 }

@@ -51,12 +51,12 @@ const Cartoes = (props) => {
     <Card.Content>
       {props.cards.map((item) => (
           <CardsItem 
-            key={item._id} 
+            key={item.id} 
             item={item}
             FontAwesomeIcon={FontAwesomeIcon}
             openNewPayment={props.openNewPayment} 
           />
-        ))}
+        )) }
         {props.cards.length == 0 ? 
           <Text style={{textAlign: 'center', padding: 15    }}>Nenhum cartão cadastrado...</Text>
         : null } 

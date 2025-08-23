@@ -11,6 +11,7 @@ import Cartoes from './Cartoes';
 import Contas from './Contas';
 import Resumo from './Resumo';
 
+import { getCards } from '../../services//cardService';
 import { getDashboard } from '../../services//dashService';
 import { getMonth, getYear } from '../../utils/data';
 import NewCreditCard from '../cards/newCreditCard';
@@ -61,8 +62,11 @@ const Dash = () => {
     setDashData(response.data);
   }
 
-  const fetchCards = () => {
-    return {};
+  const fetchCards = async () => {
+    const response = await getCards(2, 0);
+    setCards(response.data.data);
+    console.log(cards);
+
   }
 
   const fetchAccounts = () => {

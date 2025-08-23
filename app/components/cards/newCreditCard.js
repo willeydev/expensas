@@ -40,7 +40,7 @@ const NewCreditCard = (props) => {
       selectedFlag: selectedFlag
     }
     const response = await createCreditCard(obj);
-    console.log(response);
+
     if(response.status === 201) {
       toast.show('Cartão Salvo.', { type: 'success' });
       props.setModal(false);

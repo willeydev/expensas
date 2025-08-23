@@ -22,7 +22,7 @@ const CardsItem = (props) => {
             </View>
             <View style={[Theme.ElementoCardGeral, {flex: 50}]}>
                 <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.FontColor1}]}>Disponível</Text>
-                <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {item.limit_avaliable}</Text>
+                <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {new Intl.NumberFormat("pr-BR").format(item.calculated_limit)}</Text>
             </View>
             { props.edit ? <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'row'}]}>
                 <TouchableOpacity
