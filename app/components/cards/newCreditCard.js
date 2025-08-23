@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 import { Button, Divider, HelperText } from 'react-native-paper';
+import { useToast } from 'react-native-toast-notifications';
+import { createCreditCard } from '../../services/cardService';
 import Theme from '../../theme';
 import InputSelect from '../inputSelect';
 
@@ -12,6 +14,8 @@ const NewCreditCard = (props) => {
   const [dueDay, setDueDay] = useState('');
   const [closeDay, setCloseDay] = useState('');
   const [selectedFlag, setSelectedFlag] = useState('');
+  
+  const toast = useToast();
 
   flags = [
     { label: 'Visa', value: 'visa' },
@@ -27,11 +31,27 @@ const NewCreditCard = (props) => {
       console.log('invalid');
       return false;
     }
-    console.log('send data');
+
+    const obj = {
+      name: name,
+      limit: parseFloat(limit),
+      dueDay: parseInt(dueDay),
+      closeDay: parseInt(closeDay),
+      selectedFlag: selectedFlag
+    }
+    const response = await createCreditCard(obj);
+    console.log(response);
+    if(response.status === 201) {
+      toast.show('Cartão Salvo.', { type: 'success' });
+      props.setModal(false);
+      resetState();
+    }else {
+      toast.show('Erro ao salvar o cartão.', { type: 'error' });
+    }
   }
 
   const validateForm = () => {
-    console.log(closeDay);
+
     if(name.length < 3) {
       return false;
     }
@@ -53,6 +73,14 @@ const NewCreditCard = (props) => {
     }
 
     return true;
+  }
+
+  const resetState = () => {
+    setName('');
+    setLimit('');
+    setDueDay('');
+    setCloseDay('');
+    setSelectedFlag('');
   }
   
   if(props.modal === false) {
