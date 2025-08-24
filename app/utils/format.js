@@ -1,17 +1,8 @@
 function formatMoney(value) {
-    if(!value) {
-      return null;
-    }
-    var valorLimpo = value.replace(/[^\d]/g, '');
-
-    // Formata para ter duas casas decimais
-    var numero = parseFloat(valorLimpo) / 100;
-
-    // Formata o número com ponto para separar milhares e vírgula para separar decimais
-    return numero.toLocaleString('pt-BR', {
+    return new Intl.NumberFormat("pr-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-    });
+    }).format(value)
 }
 
 function formatMoneyToDash(value, correction = true) {

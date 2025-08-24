@@ -14,6 +14,7 @@ import Resumo from './Resumo';
 import { getCards } from '../../services//cardService';
 import { getDashboard } from '../../services//dashService';
 import { getMonth, getYear } from '../../utils/data';
+import { formatMoney } from '../../utils/format';
 import NewCreditCard from '../cards/newCreditCard';
 import NewPayment from './newPayment';
 
@@ -110,13 +111,14 @@ const Dash = () => {
           
           <Resumo 
             FontAwesomeIcon={FontAwesomeIcon} 
-            balancePredicted={new Intl.NumberFormat("pr-BR").format(dashData.balance_preview)}
-            totalPredictedReceipt={new Intl.NumberFormat("pr-BR").format(dashData.receipt_preview)}
-            totalPredictedExpense={new Intl.NumberFormat("pr-BR").format(dashData.expense_preview)}
+            balancePredicted={formatMoney(dashData.balance_preview)}
+            totalPredictedReceipt={formatMoney(dashData.receipt_preview)}
+            totalPredictedExpense={formatMoney(dashData.expense_preview)}
 
-            totalEffectedReceipt={new Intl.NumberFormat("pr-BR").format(dashData.receipt_effected)}
-            totalEffectedExpense={new Intl.NumberFormat("pr-BR").format(dashData.expense_effected)}
-            balanceEffected={ new Intl.NumberFormat("pr-BR").format(dashData.balance_effected)}
+            totalEffectedReceipt={formatMoney(dashData.receipt_effected)}
+            totalEffectedExpense={formatMoney(dashData.expense_effected)}
+            balanceEffected={formatMoney(dashData.balance_effected)}
+
           ></Resumo>
           <Cartoes 
             setModal={setModalCard} 

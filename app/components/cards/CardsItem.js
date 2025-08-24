@@ -36,8 +36,14 @@ const CardsItem = (props) => {
             <View style={[Theme.ElementoCardGeral, {flex: 50}]}>
                 <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.Green1}]}>Disponível</Text>
                 <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {new Intl.NumberFormat("pr-BR").format(item.calculated_limit)}</Text>
-                <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.Red1, marginTop: 10}]}>Fatura atual</Text>
-                <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {new Intl.NumberFormat("pr-BR").format(item.card_month)}</Text>
+                
+                {
+                    <>
+                        <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.Red1, marginTop: 10}]}>Fatura atual</Text>
+                        <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {new Intl.NumberFormat("pr-BR").format(item.card_month)}</Text>    
+                    </>
+                }
+                
             </View>
             
             { props.edit ? <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'row'}]}>
@@ -71,7 +77,7 @@ const CardsItem = (props) => {
                     style={[styles.button, isHovered && styles.buttonHovered]}
                     onPressIn={() => setIsHovered(true)}
                     onPressOut={() => setIsHovered(false)}
-                    onPress={() => setCurrentModal()}
+                    onPress={item.card_month > 0 ? () => setCurrentModal() : null}
             >
             <View style={{padding: 10, display: 'flex', flexDirection: 'row', alignContent: 'center'}}>
                 <Text 
@@ -80,14 +86,14 @@ const CardsItem = (props) => {
                             width: 80, 
                             height: 30, 
                             padding: 5, 
-                            backgroundColor: Theme.Colors.FontColor1,
+                            backgroundColor: item.card_month > 0 ? Theme.Colors.FontColor1 : Theme.Colors.Green1,
                             color: Theme.Colors.White,
                             textAlign: 'center',
                             borderRadius: 50
                         }
                     } 
                 >
-                    Pagar
+                    {item.card_month > 0 ? "Pagar" : "Paga"}
                 </Text>
             </View>
             </TouchableOpacity>
