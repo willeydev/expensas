@@ -15,11 +15,13 @@ import { getCards } from '../../services//cardService';
 import { getDashboard } from '../../services//dashService';
 import { getMonth, getYear } from '../../utils/data';
 import NewCreditCard from '../cards/newCreditCard';
+import NewPayment from './newPayment';
 
 const Dash = () => {
   
   const [modalCard, setModalCard] = useState(false);
   const [modalBank, setModalBank] = useState(false);
+  const [modalPayment, setModalPayment] = useState(false);
   const [dashData, setDashData] = useState({});
 
   const [filteredMonth, setFilteredMonth] = useState(getMonth('string'));
@@ -28,12 +30,6 @@ const Dash = () => {
   const [cards, setCards] = useState([]);
   const [accounts, setAccounts] = useState([]);
   
-  const openNewPayment = (type, uuid) => {
-    setModal('new-payment-card')
-    setModalType(type);
-    setCardSelectedUuid(uuid);
-  }
-
   useEffect(() => {
     
     if(filteredMonth && filteredYear) {
@@ -88,12 +84,21 @@ const Dash = () => {
       modal={modalBank} 
       fetchData={fetchAll}
     />  
+    
     <NewCreditCard
       FontAwesomeIcon={FontAwesomeIcon}
       modal={modalCard}
       setModal={setModalCard}
       fetchData={fetchAll}
     /> 
+
+    <NewPayment
+      FontAwesomeIcon={FontAwesomeIcon}
+      modal={modalPayment}
+      setModal={setModalPayment}
+      fetchData={fetchData}
+    /> 
+
     <AppBar fetchData={fetchData} />
     <ScrollView style={{paddingBottom: 100}}>
       <View style={Theme.MainView}>
@@ -108,7 +113,15 @@ const Dash = () => {
             totalEffectedExpense={new Intl.NumberFormat("pr-BR").format(dashData.expense_effected)}
             balanceEffected={ new Intl.NumberFormat("pr-BR").format(dashData.balance_effected)}
           ></Resumo>
-          <Cartoes setModal={setModalCard} openNewPayment={openNewPayment} cards={cards} FontAwesomeIcon={FontAwesomeIcon}></Cartoes>
+          <Cartoes 
+            setModal={setModalCard} 
+            setModalPayment={setModalPayment} 
+            modalPayment={modalPayment}
+            fetchData={fetchAll}
+            cards={cards} 
+            FontAwesomeIcon={FontAwesomeIcon}>
+              
+          </Cartoes>
           <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon}></Contas>
       </View>
     </ScrollView>

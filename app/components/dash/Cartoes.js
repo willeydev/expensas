@@ -17,6 +17,7 @@ const Cartoes = (props) => {
   }
   const [isHovered, setIsHovered] = useState(false);
   const iconSize= 25;
+  
 
   useEffect(() => {
 
@@ -54,7 +55,9 @@ const Cartoes = (props) => {
             key={item.id} 
             item={item}
             FontAwesomeIcon={FontAwesomeIcon}
-            openNewPayment={props.openNewPayment} 
+            modalPayment={props.modalPayment}
+            setModalPayment={props.setModalPayment}
+            fetchData={props.fetchData}
           />
         )) }
         {props.cards.length == 0 ? 

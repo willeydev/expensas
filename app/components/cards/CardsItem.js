@@ -55,7 +55,7 @@ const CardsItem = (props) => {
                     style={[styles.button, isHovered && styles.buttonHovered]}
                     onPressIn={() => setIsHovered(true)}
                     onPressOut={() => setIsHovered(false)}
-                    onPress={() => props.openNewPayment('new-payment-card', item._id)}
+                    onPress={() => props.setModalPayment(true)}
             >
             <View style={{padding: 10, display: 'flex', flexDirection: 'row', alignContent: 'center'}}>
                 <Text 
