@@ -40,7 +40,7 @@ const NewPayment = (props) => {
     if(!fromServer) {
       value = parseFloat(numeric) / 100;
     }
-    
+  
     const formatted = value.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -50,8 +50,29 @@ const NewPayment = (props) => {
     finalFormatted = finalFormatted.replace(',', '');
     finalFormatted = finalFormatted.replace('R$', '');
 
+    console.log(parseFloat(finalFormatted) / 100);
+    setAmountHandled(parseFloat(finalFormatted) / 100);
+
+    setAmount(formatted);
+  };
+
+  const handleAmountRecovered = (text) => {
+    
+    text = text.toString();
+
+    const numeric = text.replace(/\D/g, "");
+
+    if (!numeric) {
+      setAmount("");
+      return;
+    }
+
+    let value = parseFloat(numeric);
+  
+
     setAmountHandled(parseFloat(finalFormatted) / 100);
     setAmount(formatted);
+
   };
 
   const validateForm = () => {
@@ -91,7 +112,7 @@ const NewPayment = (props) => {
       recurrent: false,
       fixed: false
     };
-
+  console.log(payment.amount)
     const response = await createTransaction(payment)
     
     if(response.status === 201) {
