@@ -58,6 +58,7 @@ const Cartoes = (props) => {
             modalPayment={props.modalPayment}
             setModalPayment={props.setModalPayment}
             fetchData={props.fetchData}
+            setCard={props.setCard}
           />
         )) }
         {props.cards.length == 0 ? 

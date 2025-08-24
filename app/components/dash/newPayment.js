@@ -6,6 +6,10 @@ import Theme from '../../theme';
 import { getAccounts } from '../../services/accountService';
 import InputSelect from '../inputSelect';
 
+import dayjs from "dayjs";
+import { useToast } from 'react-native-toast-notifications';
+
+import { createTransaction } from '../../services/transactionService';
 
 
 const NewPayment = (props) => {
@@ -16,7 +20,13 @@ const NewPayment = (props) => {
   const [accounts, setAccounts] = useState([]);
   const scrollView = useRef();
 
-  const handleAmount = (text) => {
+  const toast = useToast();
+
+  const handleAmount = (text, fromServer = false) => {
+    if(!text) {
+      return;
+    }
+    text = text.toString();
 
     const numeric = text.replace(/\D/g, "");
 
@@ -25,8 +35,12 @@ const NewPayment = (props) => {
       return;
     }
 
-    const value = parseFloat(numeric) / 100;
-
+    let value = parseFloat(numeric);
+    
+    if(!fromServer) {
+      value = parseFloat(numeric) / 100;
+    }
+    
     const formatted = value.toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -37,14 +51,58 @@ const NewPayment = (props) => {
     finalFormatted = finalFormatted.replace('R$', '');
 
     setAmountHandled(parseFloat(finalFormatted) / 100);
-    console.log(amountHandled)
     setAmount(formatted);
   };
 
   const validateForm = () => {
+    if(amountHandled.length === 0 || amountHandled === 0) {
+      return false;
+    }
 
+    if(selectedBankAccount?.length == 0) {
+      return false;
+    }
+    return true;
   }
 
+  const action = async () => {
+
+    if(!validateForm()) {
+      return;
+    }
+    
+    const today = dayjs().format("YYYY-MM-DD");
+
+    const payment = {
+      amount: amountHandled,
+
+      name: "Pagamento de cartao",
+      category_id: null,
+      date: today,
+      dueDate: today,
+      effectedDate: today,
+      credit_card_id: 1,
+      account_id: selectedBankAccount,
+      minDate: today,
+      maxDate: today,
+      credit_card_payment: true,
+      type: "receipt",
+      installments: 1,
+      recurrent: false,
+      fixed: false
+    };
+
+    const response = await createTransaction(payment)
+    
+    if(response.status === 201) {
+      toast.show('Pagamento registrado.', { type: 'success' });
+      props.setModal(false);
+      resetState();
+      props.fetchData();
+    } else {
+      toast.show('Erro ao registrar o pagamento.', { type: 'error' });
+    }
+  }
 
   const defAccounts = async () => {
     const response = await getAccounts(2, 0);
@@ -56,14 +114,20 @@ const NewPayment = (props) => {
     setAccounts(dataReadyToSelect)
   }
 
-  useEffect(() => {
+  useEffect(() => {        
+      handleAmount(props.cardSelected?.card_month, true);
+      setAmount(props.cardSelected?.card_month);
       defAccounts();
-  }, []);
+  }, [props.cardSelected]);
 
-  const closeModal = () => {
+  const resetState = () => { 
     setAmount('');
     setAmountHandled('');
     setSelectedBankAccount('');
+  }
+
+  const closeModal = () => {
+    resetState();
     props.setModal(false)
   }
 

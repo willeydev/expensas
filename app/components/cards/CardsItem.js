@@ -11,6 +11,11 @@ const CardsItem = (props) => {
 
   const [isHovered, setIsHovered] = useState(false);
   const iconSize = 25;
+
+  const setCurrentModal = () => {
+    props.setCard(item);
+    props.setModalPayment(true);
+  }
   return <>
 
     <NewPayment
@@ -29,9 +34,12 @@ const CardsItem = (props) => {
                 <Text style={[{color: Theme.Colors.FontColor1}]}>vencimento: {item.dueDay}</Text>
             </View>
             <View style={[Theme.ElementoCardGeral, {flex: 50}]}>
-                <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.FontColor1}]}>Disponível</Text>
+                <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.Green1}]}>Disponível</Text>
                 <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {new Intl.NumberFormat("pr-BR").format(item.calculated_limit)}</Text>
+                <Text style={[Theme.CardFontPrimary, {color: Theme.Colors.Red1, marginTop: 10}]}>Fatura atual</Text>
+                <Text style={[{color: Theme.Colors.FontColor1}]}>R$ {new Intl.NumberFormat("pr-BR").format(item.card_month)}</Text>
             </View>
+            
             { props.edit ? <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'row'}]}>
                 <TouchableOpacity
                     style={[styles.button, isHovered && styles.buttonHovered]}
@@ -63,7 +71,7 @@ const CardsItem = (props) => {
                     style={[styles.button, isHovered && styles.buttonHovered]}
                     onPressIn={() => setIsHovered(true)}
                     onPressOut={() => setIsHovered(false)}
-                    onPress={() => props.setModalPayment(true)}
+                    onPress={() => setCurrentModal()}
             >
             <View style={{padding: 10, display: 'flex', flexDirection: 'row', alignContent: 'center'}}>
                 <Text 

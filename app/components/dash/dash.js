@@ -23,6 +23,7 @@ const Dash = () => {
   const [modalBank, setModalBank] = useState(false);
   const [modalPayment, setModalPayment] = useState(false);
   const [dashData, setDashData] = useState({});
+  const [cardSelected, setCardSelected] = useState({});
 
   const [filteredMonth, setFilteredMonth] = useState(getMonth('string'));
   const [filteredYear, setFilteredYear] = useState(getYear('string'));
@@ -56,6 +57,8 @@ const Dash = () => {
     });
     
     setDashData(response.data);
+    fetchCards();
+    fetchAccounts();
   }
 
   const fetchCards = async () => {
@@ -98,6 +101,7 @@ const Dash = () => {
       modal={modalPayment}
       setModal={setModalPayment}
       fetchData={fetchData}
+      cardSelected={cardSelected}
     /> 
 
     <AppBar fetchData={fetchData} />
@@ -120,7 +124,9 @@ const Dash = () => {
             modalPayment={modalPayment}
             fetchData={fetchAll}
             cards={cards} 
-            FontAwesomeIcon={FontAwesomeIcon}>
+            FontAwesomeIcon={FontAwesomeIcon}
+            setCard={setCardSelected}
+          >
               
           </Cartoes>
           <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon}></Contas>
