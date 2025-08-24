@@ -93,6 +93,7 @@ const Dash = () => {
     /> 
 
     <NewPayment
+      visible={false}
       FontAwesomeIcon={FontAwesomeIcon}
       modal={modalPayment}
       setModal={setModalPayment}

@@ -1,7 +1,8 @@
-const API_URL= 'http://127.0.0.1:8000/api'
-
 import axios from "axios";
 import { getToken } from "./userService";
+
+import { getEnvs } from "./apiConfig";
+const API_URL= getEnvs().API_URL;
 
 async function getDashboard(data) {
     
