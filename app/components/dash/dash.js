@@ -13,6 +13,7 @@ import Resumo from './Resumo';
 
 import { getCards } from '../../services//cardService';
 import { getDashboard } from '../../services//dashService';
+import { getAccounts } from '../../services/accountService';
 import { getMonth, getYear } from '../../utils/data';
 import { formatMoney } from '../../utils/format';
 import NewCreditCard from '../cards/newCreditCard';
@@ -65,12 +66,11 @@ const Dash = () => {
   const fetchCards = async () => {
     const response = await getCards(2, 0);
     setCards(response.data.data);
-    console.log(cards);
-
   }
 
-  const fetchAccounts = () => {
-    return {};
+  const fetchAccounts = async () => {
+    const response = await getAccounts(2, 0);
+    setAccounts(response.data.data);
   }
 
   const fetchAll = () =>{
@@ -124,14 +124,14 @@ const Dash = () => {
             setModal={setModalCard} 
             setModalPayment={setModalPayment} 
             modalPayment={modalPayment}
-            fetchData={fetchAll}
+            fetchData={fetchCards}
             cards={cards} 
             FontAwesomeIcon={FontAwesomeIcon}
             setCard={setCardSelected}
           >
               
           </Cartoes>
-          <Contas setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon}></Contas>
+          <Contas fetchData={fetchAccounts} setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon}></Contas>
       </View>
     </ScrollView>
     <BottomBar fetchCards={fetchCards} fetchData={fetchData}/>

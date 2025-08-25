@@ -44,6 +44,7 @@ const NewCreditCard = (props) => {
     if(response.status === 201) {
       toast.show('Cartão Salvo.', { type: 'success' });
       props.setModal(false);
+      props.fetchData();
       resetState();
     }else {
       toast.show('Erro ao salvar o cartão.', { type: 'error' });
