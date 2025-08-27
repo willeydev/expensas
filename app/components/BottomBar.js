@@ -26,8 +26,8 @@ const BottomBar = (props) => {
   const iconSize = 30;
 
   const openNewTransaction = (type) => {
-    setModal('new-transaction')
-    setModalType(type);
+    props.setModal(true);
+    props.setModalType()
   }
 
   return (
@@ -61,7 +61,7 @@ const BottomBar = (props) => {
           style={[styles.button, isHovered && styles.buttonHovered]}
           onPressIn={() => setIsHovered(true)}
           onPressOut={() => setIsHovered(false)}
-          onPress={() => openNewTransaction('receipt-create')}
+          onPress={() => openNewTransaction('receipt')}
         >
           <View style={[Theme.BottomBar.contemFab]}> 
             
@@ -76,7 +76,7 @@ const BottomBar = (props) => {
           style={[styles.button, isHovered && styles.buttonHovered]}
           onPressIn={() => setIsHovered(true)}
           onPressOut={() => setIsHovered(false)}
-          onPress={() => openNewTransaction('expense-create')}
+          onPress={() => openNewTransaction('expense')}
         >
         <View style={[Theme.BottomBar.contemFab]}> 
             <FontAwesomeIcon size={iconSize} icon={ faSquareMinus } style={{color: 'gray'}}/>
@@ -90,7 +90,7 @@ const BottomBar = (props) => {
           style={[styles.button, isHovered && styles.buttonHovered]}
           onPressIn={() => setIsHovered(true)}
           onPressOut={() => setIsHovered(false)}
-          onPress={() => openNewTransaction('credit-card-expense-create')}
+          onPress={() => openNewTransaction('card-expense')}
         >
         <View style={[Theme.BottomBar.contemFab, {textAlign: 'center'}]}> 
           <FontAwesomeIcon size={iconSize} icon={ faCreditCard } style={{color: 'gray'}}/>

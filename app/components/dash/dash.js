@@ -17,6 +17,7 @@ import { getAccounts } from '../../services/accountService';
 import { getMonth, getYear } from '../../utils/data';
 import { formatMoney } from '../../utils/format';
 import NewCreditCard from '../cards/newCreditCard';
+import NewTransaction from '../transactions/newTransaction';
 import NewPayment from './newPayment';
 
 const Dash = () => {
@@ -24,6 +25,9 @@ const Dash = () => {
   const [modalCard, setModalCard] = useState(false);
   const [modalBank, setModalBank] = useState(false);
   const [modalPayment, setModalPayment] = useState(false);
+  const [modalTransaction, setModalTransaction] = useState(false);
+  const [transactionType, setTransactionType] = useState('');
+
   const [dashData, setDashData] = useState({});
   const [cardSelected, setCardSelected] = useState({});
 
@@ -105,6 +109,14 @@ const Dash = () => {
       cardSelected={cardSelected}
     /> 
 
+    <NewTransaction 
+      FontAwesomeIcon={FontAwesomeIcon}
+      modal={modalTransaction}
+      setModal={setModalTransaction}
+      fetchData={fetchAll}
+      type={transactionType}
+    />
+
     <AppBar fetchData={fetchData} />
     <ScrollView style={{paddingBottom: 100}}>
       <View style={Theme.MainView}>
@@ -134,7 +146,7 @@ const Dash = () => {
           <Contas fetchData={fetchAccounts} setModal={setModalBank} accounts={accounts} FontAwesomeIcon={FontAwesomeIcon}></Contas>
       </View>
     </ScrollView>
-    <BottomBar fetchCards={fetchCards} fetchData={fetchData}/>
+    <BottomBar setModal={setModalTransaction} setModalType={setTransactionType} fetchCards={fetchCards} fetchData={fetchData}/>
   </>
 };
 
