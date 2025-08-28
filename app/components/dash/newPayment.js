@@ -96,7 +96,6 @@ const NewPayment = (props) => {
 
     const payment = {
       amount: amountHandled,
-
       name: "Pagamento de cartao",
       category_id: null,
       date: today,

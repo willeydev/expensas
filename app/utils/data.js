@@ -153,6 +153,11 @@ function monthDifference(mes1, ano1, mes2, ano2) {
     return diferencaTotalMeses;
 }
 
+function dateToServer(dateStr) {
+  const [dia, mes, ano] = dateStr.split("/");
+  return `${ano}-${mes}-${dia}`;
+}
+
 module.exports = {
     getDay,
     getMonth,
@@ -162,7 +167,8 @@ module.exports = {
     getCardDueDate,
     parseDateToObj,
     parseDateToBr,
-    monthDifference
+    monthDifference,
+    dateToServer
 }
 
 

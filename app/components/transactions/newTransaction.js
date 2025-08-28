@@ -15,6 +15,8 @@ import { getCategories } from '../../services//categoryService';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { dateToServer } from '../../utils/data';
+
 
 
 const NewTransaction = (props) => {
@@ -34,8 +36,8 @@ const NewTransaction = (props) => {
 
   const [name, setName] = useState('');
   
-  const [amount, setAmount] = useState('');
-  const [amountHandled, setAmountHandled] = useState('');
+  const [amount, setAmount] = useState('R$ 0,00');
+  const [amountHandled, setAmountHandled] = useState(0);
   
 
   const [selectedBankAccount, setSelectedBankAccount] = useState('');
@@ -48,7 +50,7 @@ const NewTransaction = (props) => {
     if(!Number.isNaN(Number(value)) && /\b[1-9]\d*\b/.test(value)) {
       let number = parseInt(value);
       if(number > 120) {
-        setSelectedinstallments('');
+        setSelectedinstallments(120);
       } else {
         setSelectedinstallments(String(value));
       }
@@ -89,6 +91,28 @@ const NewTransaction = (props) => {
   const [cards, setCards] = useState([]);
 
   const toast = useToast();
+
+  const action = () => {
+    const transaction = {
+      name: name,
+      amount: amountHandled,
+      category_id: selectedCategory.value,
+      date: dateToServer(date),
+      dueDate: dateToServer(date),
+      effectedDate: isEffected ? dateToServer(date) : null,
+      credit_card_id: null,
+      account_id: null,
+      minDate: dateToServer(date),
+      maxDate: dateToServer(date),
+      credit_card_payment: false,
+      type: "receipt",
+      installments: selectedInstallments,
+      recurrent: isDivided || isRecurrent,
+      fixed: isRecurrent
+    };
+    console.log(transaction);
+    closeModal();
+  }
 
   const getSelectedCard = (uuid) => {
 
@@ -133,19 +157,19 @@ const NewTransaction = (props) => {
 
     const defCategories = async () => {
         const response = await getCategories(100, 0);
-        console.log(response);
+        
         const dataReadyToSelect = response.data.data.map(item => ({
         value: item.id,
         label: item.name
         }));
-        console.log(dataReadyToSelect);
-        setCategories(dataReadyToSelect)
+        setSelectedCategory(dataReadyToSelect[0]);
+        setCategories(dataReadyToSelect);
     }
 
   useEffect(() => {
     defCategories();
     defCards();
-    console.log(props.type)
+  
     if(props.type == 'receipt') {
         setModalTitle('Nova Receita');
     } else if(props.type == 'expense') {
@@ -155,10 +179,6 @@ const NewTransaction = (props) => {
     }
 
   }, [props.type])
-
-  const action = async () => {
-    closeModal();
-  }
 
   const handleAmount = (text, fromServer = false) => {
     if(!text) {
@@ -320,6 +340,7 @@ const NewTransaction = (props) => {
                   label="Selecione a categoria"
                   setValue={setSelectedCategory}
                   mode='create'
+                  selected={selectedCategory}
                   customStyle={{marginLeft: -2, maxHeight: '50%'}}
               />
               </View>
@@ -347,20 +368,17 @@ const NewTransaction = (props) => {
               }
               
               
-              <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between'}]}>
+              {!isDivided ? <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between'}]}>
                 <Text style={{color: Theme.Colors.FontColor1}}>Recorrente</Text> 
                 <Switch label="Recorrente" value={isRecurrent} onValueChange={onToggleRecurrent} color={Theme.Colors.Green1}/>  
-              </View>
-              
-              { 
-              
-              }
+              </View> : null }
                
-                <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between'}]}>
-                  <Text style={{color: Theme.Colors.FontColor1}}>Parcelada</Text> 
-                  <Switch value={isDivided} onValueChange={onToggleDivided} color={Theme.Colors.Green1}/>
-                </View>
-              { isDivided && !isRecurrent ?
+              {!isRecurrent ? <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between'}]}>
+                <Text style={{color: Theme.Colors.FontColor1}}>Parcelada</Text> 
+                <Switch value={isDivided} onValueChange={onToggleDivided} color={Theme.Colors.Green1}/> 
+              </View> : null }
+
+              { isDivided || isRecurrent ?
                 <TextInput
                   keyboardType="numeric"
                   mode="contained"
