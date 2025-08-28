@@ -112,7 +112,7 @@ const NewPayment = (props) => {
       recurrent: false,
       fixed: false
     };
-  console.log(payment.amount)
+
     const response = await createTransaction(payment)
     
     if(response.status === 201) {

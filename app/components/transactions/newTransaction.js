@@ -7,7 +7,6 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useToast } from 'react-native-toast-notifications';
 import { getCardDueDate, getCurrentDate } from '../../utils/data';
-import { formatMoney } from '../../utils/format';
 import InputSelect from '../inputSelect';
 
 const NewTransaction = (props) => {
@@ -15,9 +14,8 @@ const NewTransaction = (props) => {
   const [name, setName] = useState('');
   
   const [amount, setAmount] = useState('');
-  function defAmount(value) {
-    setAmount(formatMoney(value));
-  }
+  const [amountHandled, setAmountHandled] = useState('');
+  
 
   const [selectedBankAccount, setSelectedBankAccount] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -125,19 +123,38 @@ const NewTransaction = (props) => {
     closeModal();
   }
 
-  const saveItem = async () => {
-    
-  }
-
-  const updateItem = () => {
-
-    try{
-        
-    } catch (error) {
-
+  const handleAmount = (text, fromServer = false) => {
+    if(!text) {
+      return;
     }
+    text = text.toString();
+
+    const numeric = text.replace(/\D/g, "");
+
+    if (!numeric) {
+      setAmount("");
+      return;
+    }
+
+    let value = parseFloat(numeric);
     
-  }
+    if(!fromServer) {
+      value = parseFloat(numeric) / 100;
+    }
+  
+    const formatted = value.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+    
+    let finalFormatted = formatted.replace('.', '');
+    finalFormatted = finalFormatted.replace(',', '');
+    finalFormatted = finalFormatted.replace('R$', '');
+    console.log(finalFormatted);
+    setAmountHandled(parseFloat(finalFormatted) / 100);
+
+    setAmount(formatted);
+  };
 
   const closeModal = () => {
     resetState();
@@ -165,7 +182,7 @@ const NewTransaction = (props) => {
                 style={[Theme.TextInput]}
                 placeholderTextColor={Theme.Colors.FontColor1}
                 value={amount}
-                onChangeText={amount => defAmount(amount)}
+                onChangeText={amount => handleAmount(amount)}
 
             />
             { validateForm && amount.length == 0 ? <HelperText style={{textAlign: 'center'}} type="error">

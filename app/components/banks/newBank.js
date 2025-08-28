@@ -14,7 +14,7 @@ const NewBank = (props) => {
 
   const action = async () => {
       if (!validateForm()) {
-        console.log('invalid');
+
         return false;
       }
   
