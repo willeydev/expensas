@@ -9,7 +9,28 @@ import { useToast } from 'react-native-toast-notifications';
 import { getCardDueDate, getCurrentDate } from '../../utils/data';
 import InputSelect from '../inputSelect';
 
+import { getCards } from '../../services//cardService';
+import { getCategories } from '../../services//categoryService';
+
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+
+
 const NewTransaction = (props) => {
+
+  const insets = useSafeAreaInsets();
+    
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [date, setDate] = useState(new Date().getDate()+'/'+String(new Date().getMonth() + 1).padStart(2, "0")+'/'+new Date().getFullYear());
+
+  const showDatePicker = () => setDatePickerVisibility(true);
+  const hideDatePicker = () => setDatePickerVisibility(false);
+
+  const handleConfirm = (selectedDate) => {
+    setDate(selectedDate.getDate()+'/'+String(selectedDate.getMonth() + 1).padStart(2, "0")+'/'+selectedDate.getFullYear());
+    hideDatePicker();
+  };
 
   const [name, setName] = useState('');
   
@@ -35,7 +56,7 @@ const NewTransaction = (props) => {
       setSelectedinstallments('');
     }
   }
-  const [date, setDate] = useState(null);
+
   const [dueDate, setDueDate] = useState(null);
   const [isRecurrent, setIsRecurrent] = useState(false);
   const [isEffected, setIsEffected] = useState(false);
@@ -69,18 +90,6 @@ const NewTransaction = (props) => {
 
   const toast = useToast();
 
-  const getCategories = async () => {
-    
-  }
-
-  const getAccounts = async () => {
-    
-  }
-
-  const getCards = async () => {
-
-  }
-
   const getSelectedCard = (uuid) => {
 
   }
@@ -112,12 +121,40 @@ const NewTransaction = (props) => {
 
   const [acordeonOpened, setAcordeonOpened] = useState(true);
 
-  useEffect(() => {
-    getCategories();
-    getAccounts();
-    getCards();
+    const defCards = async () => {
+        const response = await getCards(100, 0);
+        const dataReadyToSelect = response.data.data.map(item => ({
+        value: item.id,
+        label: item.name
+        }));
 
-  }, [])
+        setCards(dataReadyToSelect)
+    }
+
+    const defCategories = async () => {
+        const response = await getCategories(100, 0);
+        console.log(response);
+        const dataReadyToSelect = response.data.data.map(item => ({
+        value: item.id,
+        label: item.name
+        }));
+        console.log(dataReadyToSelect);
+        setCategories(dataReadyToSelect)
+    }
+
+  useEffect(() => {
+    defCategories();
+    defCards();
+    console.log(props.type)
+    if(props.type == 'receipt') {
+        setModalTitle('Nova Receita');
+    } else if(props.type == 'expense') {
+        setModalTitle('Nova Despesa');
+    } else if(props.type == 'card-expense') {
+        setModalTitle('Despesa de Cartão');
+    }
+
+  }, [props.type])
 
   const action = async () => {
     closeModal();
@@ -167,9 +204,9 @@ const NewTransaction = (props) => {
   
   return (
     <>
-        <View style={[Theme.ModalOpacity]} onTouchStart={closeModal}>
+        <View style={[Theme.ModalOpacity, {paddingBottom: insets.bottom + 16}]} onTouchStart={closeModal}>
         </View>
-        <View style={[Theme.ModalBody, {minHeight: '90%', maxHeight: '90%',}]}>
+        <View style={[Theme.ModalBody, {flex: 1, minHeight: '70%', maxHeight: '70%',}]}>
             <Text style={[Theme.ModalTitle, {color: Theme.Colors.FontColor1}]}>{modalTitle}</Text>
             <Divider style={Theme.ModalDivider}></Divider>
             <ScrollView ref={scrollView}>
@@ -201,7 +238,7 @@ const NewTransaction = (props) => {
             />
             
 
-            { 
+            {/* { 
               !isCard ? 
               <InputSelect 
                   items={accounts}
@@ -215,7 +252,7 @@ const NewTransaction = (props) => {
 
             { validateForm && !isCard && (!selectedBankAccount || selectedBankAccount?.length == 0) ? <HelperText style={{textAlign: 'center'}} type="error">
               Escolha uma conta.
-            </HelperText> : null}
+            </HelperText> : null} */}
 
             { 
             isCard ? 
@@ -235,11 +272,25 @@ const NewTransaction = (props) => {
                 Escolha um cartão.
             </HelperText> : null}
 
-            {(props.type != 'receipt') ? <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 15, flexDirection: 'row', justifyContent: 'space-between'}]}>
+            {(props.type !== 'receipt') ? <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 15, flexDirection: 'row', justifyContent: 'space-between'}]}>
               <Text style={{color: Theme.Colors.FontColor1}}>No cartão</Text> 
               <Switch value={isCard} onValueChange={onToggleIsCard} color={Theme.Colors.Green1} />
             </View> : null}
           
+          <View onTouchEnd={showDatePicker} style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between'}]}>
+            <Text >
+                 {date ? date : "Selecione uma data"}
+            </Text>
+
+            <DateTimePickerModal
+            
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+            />
+            </View>
+
             <TouchableOpacity
                 style={[styles.button, isHovered && styles.buttonHovered]}
                 onPressIn={() => setIsHovered(true)}
@@ -260,16 +311,6 @@ const NewTransaction = (props) => {
               <View>
 
               <View>
-              { dueDate ? <Text style={Theme.LabelInput}>Pagar em</Text> : null }
-              <TextInput
-                mode="contained"
-                label="data"
-                placeholder=""
-                style={[Theme.TextInput, {marginLeft: 20}]}
-                value={dueDate}
-                onTouchStart={null}
-                showSoftInputOnFocus={false}
-              />
 
               { selectedCategory?.length > 0 ? <Text style={[Theme.LabelInput]}>Categoria </Text> : null }
 
@@ -282,7 +323,7 @@ const NewTransaction = (props) => {
                   customStyle={{marginLeft: -2, maxHeight: '50%'}}
               />
               </View>
-              <View>
+              {/* <View>
               { date ? <Text style={Theme.LabelInput}>Data de lançamento</Text> : null }
 
               <TextInput
@@ -294,7 +335,7 @@ const NewTransaction = (props) => {
                 onTouchStart={null}
                 showSoftInputOnFocus={false}
               />
-              </View>
+              </View> */}
               </View>
 
               {!isCard ? <View style={[Theme.TextInput, {color: Theme.Colors.FontColor1, marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between'}]}>

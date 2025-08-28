@@ -27,7 +27,7 @@ const BottomBar = (props) => {
 
   const openNewTransaction = (type) => {
     props.setModal(true);
-    props.setModalType()
+    props.setModalType(type)
   }
 
   return (

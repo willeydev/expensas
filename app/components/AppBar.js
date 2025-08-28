@@ -10,7 +10,7 @@ import Menu from './Menu';
 
 function AppBar(props) {
   const {name} = useRoute();
-  const [barTitle, setBarTitle] = useState('Dashboard');
+  const [barTitle, setBarTitle] = useState('Resumo');
   const [backRoute, setBackRoute] = useState('');
   const [isHovered, setIsHovered] = useState(false);
   
@@ -24,7 +24,7 @@ function AppBar(props) {
 
   function setBarInfo() {
     switch(name) {
-      case 'Dash': setBarTitle('Dashboard'); 
+      case 'Dash': setBarTitle('Resumo'); 
       break;
       case 'Transactions': setBarTitle('Transações'); setBackRoute('Dash')
       break;
@@ -45,7 +45,7 @@ function AppBar(props) {
   { menuOpen && <Menu FontAwesomeIcon={FontAwesomeIcon} isVisible={menuOpen} setIsVisible={setMenuOpen} />}
   <Appbar.Header style={{backgroundColor: Theme.Colors.Green1, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
     <View style={{flex: 1, marginLeft: 10}}>
-      { barTitle != 'Dashboard' ?
+      { barTitle != 'Resumo' ?
         <TouchableOpacity
           style={[styles.button, isHovered && styles.buttonHovered]}
           onPressIn={() => setIsHovered(true)}

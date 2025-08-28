@@ -1,20 +1,23 @@
-import { useState } from 'react';
 import { AppRegistry } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
 import { name as appName } from '../app.json';
 import Dash from './components/dash/dash';
 import { MyProvider } from './context/MyProvider';
+import Theme from './theme';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const insets = useSafeAreaInsets();
+
   return (
     
       <ToastProvider>
         <MyProvider>
         <SafeAreaProvider>
-          <Dash/>
-          {/* <Login setIsLoggedIn={setIsLoggedIn} /> */}
+          <SafeAreaView style={{paddingBottom: insets.bottom + 16, flex: 1, backgroundColor: Theme.Colors.Background}}>
+            <Dash/>
+            {/* <Login setIsLoggedIn={setIsLoggedIn} /> */}
+          </SafeAreaView>
         </SafeAreaProvider>
       </MyProvider>
       </ToastProvider>

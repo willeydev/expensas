@@ -70,7 +70,7 @@ const Menu = ({ isVisible, setIsVisible }) => {
 
         {/* Itens do Menu */}
         <View style={styles.menu}>
-          <MenuButton label="Dashboard" icon={faChartLine} onPress={() => navigateTo('Dash')} />
+          <MenuButton label="Resumo" icon={faChartLine} onPress={() => navigateTo('Dash')} />
           <MenuButton label="Categorias" icon={faTags} onPress={() => navigateTo('Categories')} />
           <MenuButton label="Cartões" icon={faCreditCard} onPress={() => navigateTo('Cards')} />
           <MenuButton label="Contas" icon={faWallet} onPress={() => navigateTo('Accounts')} />
