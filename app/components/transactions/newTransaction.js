@@ -15,6 +15,8 @@ import { getCategories } from '../../services//categoryService';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { createTransaction } from '../../services/transactionService';
+
 import { dateToServer } from '../../utils/data';
 
 
@@ -92,9 +94,9 @@ const NewTransaction = (props) => {
 
   const toast = useToast();
 
-  const action = () => {
+  const action = async () => {
     const transaction = {
-      name: name,
+      name: name ? name : '',
       amount: amountHandled,
       category_id: selectedCategory.value,
       date: dateToServer(date),
@@ -110,8 +112,16 @@ const NewTransaction = (props) => {
       recurrent: isDivided || isRecurrent,
       fixed: isRecurrent
     };
-    console.log(transaction);
-    closeModal();
+    const response = await createTransaction(transaction)
+    
+    if(response.status === 201) {
+      toast.show('Transação registrada.', { type: 'success' });
+      props.setModal(false);
+      resetState();
+      props.fetchData();
+    } else {
+      toast.show('Erro ao registrar transação.', { type: 'error' });
+    }
   }
 
   const getSelectedCard = (uuid) => {
