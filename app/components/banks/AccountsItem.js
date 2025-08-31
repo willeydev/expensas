@@ -24,7 +24,7 @@ const AccountsItem = (props) => {
                 {/*<Text style={[Theme.CardFontPrimary, {color: Theme.Colors.FontColor1}]}>Saldo</Text>*/}
                 {/*<Text style={[{color: Theme.Colors.FontColor1}]}>R$ {item.amount_avaliable}</Text>*/}
             </View>
-            { props.edit ? <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'row'}]}>
+            <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'columan'}]}>
                 <TouchableOpacity
                     style={[styles.button, isHovered && styles.buttonHovered]}
                     onPressIn={() => setIsHovered(true)}
@@ -46,10 +46,10 @@ const AccountsItem = (props) => {
                     <props.FontAwesomeIcon
                         size={22}
                         icon={faDeleteLeft}
-                        style={{color: Theme.Colors.FontColor1}}
+                        style={{color: Theme.Colors.FontColor1, marginTop: 10}}
                     />
                 </TouchableOpacity>
-            </View> : null }
+            </View>
         </View>
     </View>
   </>

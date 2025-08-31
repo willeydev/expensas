@@ -20,7 +20,18 @@ async function getAccounts(limit, offset) {
     return response;
 }
 
+async function deleteAccount(id) {
+    const response = await axios.delete(`${API_URL}/accounts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    });
+    
+    return response;
+}
+
 module.exports = {
     createAccount,
-    getAccounts
+    getAccounts,
+    deleteAccount
 }

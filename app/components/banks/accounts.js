@@ -1,8 +1,10 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { useState } from "react";
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Card, DataTable, Text } from "react-native-paper";
+import { useToast } from "react-native-toast-notifications";
+import { deleteAccount, getAccounts } from "../../services/accountService";
 import Theme from "../../theme";
 import AppBar from "../AppBar";
 import BottomBar from "../BottomBar";
@@ -11,6 +13,9 @@ import AccountsItem from "./AccountsItem";
 import NewBank from "./newBank";
 
 const Accounts = () => {
+
+    const toast = useToast();
+    const [modalBank, setModalBank] = useState(false);
 
     const [page, setPage] = useState(0);
     const [numberOfItemsPerPageList] = useState([1000]);
@@ -33,15 +38,45 @@ const Accounts = () => {
     const [choosedItem, setChoosedItem] = useState({});
     const [visibleDialog, setVisibleDialog] = useState(false);
 
+    const fetchData = async () => {
+        const response = await getAccounts(100, 0);
+        setItems(response.data.data)
+        console.log
+    }
+
+    const deleteItem = async () => {
+
+      const response = await deleteAccount(choosedItem.id)
+
+      if(response.status === 204) {
+        toast.show('Conta apagada.', { type: 'success' });
+        props.fetchData();
+      } else {
+        toast.show('Erro ao apagar conta.', { type: 'error' });
+      }
+    }
+
+    const confirmDelete = async (item) => {
+      setChoosedItem(item);
+      setVisibleDialog(true);
+    }
+
+    const editItem = async () => {
+      
+    }
+
+    useEffect(() => {
+      fetchData();
+  
+    }, [])
+
     return (
         <>
             <NewBank 
-              type={modalType} 
               FontAwesomeIcon={FontAwesomeIcon}
-              setCurrentModal={setModal} 
-              currentModal={modal} 
+              setModal={setModalBank} 
+              modal={modalBank} 
               fetchData={fetchData}
-              choosedItem={choosedItem}
             />  
             <ConfirmDialog 
               confirmAction={deleteItem} 
@@ -54,7 +89,7 @@ const Accounts = () => {
                   <DataTable>
 
                     <Card.Content style={{paddingTop: 10, paddingRight: 0}}>
-                        <View style={{flexDirection: 'row'}}>
+                        {/* <View style={{flexDirection: 'row'}}>
                           <TextInput
                               mode="contained"
                               label="Busca"
@@ -64,13 +99,13 @@ const Accounts = () => {
                               value={search}
                               onChangeText={(search) => searchFunction(search)}
                           />
-                        </View>
-                        {items.slice(from, to).map((item) => (
-                          <DataTable.Row key={item._id} style={{width: '95%'}}>
+                        </View> */}
+                        {items.map((item) => (
+                          <DataTable.Row key={item.id} style={{width: '95%'}}>
                             <AccountsItem 
                               FontAwesomeIcon={FontAwesomeIcon} 
                               edit={true} 
-                              key={item.key} 
+                              key={item.id} 
                               item={item}
                               confirmDelete={confirmDelete}
                               editItem={editItem}
@@ -91,7 +126,7 @@ const Accounts = () => {
                     style={[styles.button, isHovered && styles.buttonHovered]}
                     onPressIn={() => setIsHovered(true)}
                     onPressOut={() => setIsHovered(false)}
-                    onPress={() => openNewAccount('create')}
+                    onPress={() => setModalBank(true)}
                 >
                   <View
                     style={{
