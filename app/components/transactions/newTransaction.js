@@ -6,7 +6,7 @@ import Theme from '../../theme';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useToast } from 'react-native-toast-notifications';
-import { getCardDueDate, getCurrentDate } from '../../utils/data';
+import { getCurrentDate } from '../../utils/data';
 import InputSelect from '../inputSelect';
 
 import { getCards } from '../../services//cardService';
@@ -102,12 +102,12 @@ const NewTransaction = (props) => {
       date: dateToServer(date),
       dueDate: dateToServer(date),
       effectedDate: isEffected ? dateToServer(date) : null,
-      credit_card_id: null,
+      credit_card_id: selectedCard,
       account_id: null,
       minDate: dateToServer(date),
       maxDate: dateToServer(date),
       credit_card_payment: false,
-      type: "receipt",
+      type: props.type === 'receipt' ? 'receipt' : 'expense',
       installments: selectedInstallments,
       recurrent: isDivided || isRecurrent,
       fixed: isRecurrent
@@ -130,15 +130,19 @@ const NewTransaction = (props) => {
 
   const chooseCard = (value) => {
     setSelectedCard(value);
-    let item = getSelectedCard(value);
-    setDueDate(getCardDueDate(item, date));
-    
+    console.log(selectedCard);
   }
   
   const scrollView = useRef();
   
   const onToggleEffected = () => setIsEffected(!isEffected);
-  const onToggleIsCard = () => setIsCard(!isCard);
+
+  const onToggleIsCard = () => {
+    setIsCard(!isCard);
+    if(isCard === false) {
+      setSelectedCard(null);
+    }
+  }
   
   const onToggleRecurrent = () => {
     setIsRecurrent(!isRecurrent);

@@ -101,7 +101,7 @@ const NewPayment = (props) => {
       date: today,
       dueDate: today,
       effectedDate: today,
-      credit_card_id: 1,
+      credit_card_id: props.cardSelected.id,
       account_id: selectedBankAccount,
       minDate: today,
       maxDate: today,
