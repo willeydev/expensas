@@ -1,7 +1,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { useState } from "react";
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Card, DataTable, Text } from "react-native-paper";
 import Theme from "../../theme";
 import AppBar from "../AppBar";
@@ -10,7 +10,12 @@ import ConfirmDialog from "../confirmDialog";
 import CardsItem from "./CardsItem";
 import NewCreditCard from "./newCreditCard";
 
-const Cards = () => {
+import { useToast } from "react-native-toast-notifications";
+import { getCards } from '../../services/cardService';
+import NewPayment from "../dash/newPayment";
+import NewTransaction from "../transactions/newTransaction";
+
+const Cards = ({props}) => {
 
 const [page, setPage] = useState(0);
 const [numberOfItemsPerPageList] = useState([1000]);
@@ -40,34 +45,93 @@ const openNewCreditCard = (type) => {
   setModalType(type);
 }
 
+const fetchCards = async () => {
+  const response = await getCards(2, 0);
+  setCards(response.data.data);
+}
+
+// For all compoents with bottom bar
+const [modalTransaction, setModalTransaction] = useState(false);
+const [transactionType, setTransactionType] = useState('');
+
+    const toast = useToast();
+    const [modalCard, setModalCard] = useState(false);
+    const [modalPayment, setModalPayment] = useState(false);
+    const [modalEditCard, setModalEditCard] = useState(false);
+    const [cardSelected, setCardSelected] = useState({});
+
+    const [offset, setOffset] = useState(0);
+    const [limit, setLimit] = useState(10);
+    const [showBtnMore, setShowBtnMore] = useState(false);
+
+    const fetchData = async () => {
+        const response = await getCards(100, 0);
+        setItems(response.data.data)
+        console.log
+    }
+
+    const deleteItem = async () => {
+
+      const response = await deleteAccount(choosedItem.id)
+
+      if(response.status === 204) {
+        toast.show('Conta apagada.', { type: 'success' });
+        props.fetchData();
+      } else {
+        toast.show('Erro ao apagar conta.', { type: 'error' });
+      }
+    }
+
+    const confirmDelete = async (item) => {
+      setChoosedItem(item);
+      setVisibleDialog(true);
+    }
+
+    const editItem = async (item) => {
+      setChoosedItem(item);
+      setModalEditCard(true);
+    }
+
+    useEffect(() => {
+      fetchData();
+  
+    }, [])
+
 return (
     <>
         <NewCreditCard
-          type={modalType} 
           FontAwesomeIcon={FontAwesomeIcon}
-          setCurrentModal={setModal} 
-          currentModal={modal} 
+          modal={modalCard}
+          setModal={setModalCard}
           fetchData={fetchData}
-          choosedItem={choosedItem}
-        />  
+        /> 
         <ConfirmDialog 
           confirmAction={deleteItem} 
           visible={visibleDialog} 
           setVisible={setVisibleDialog}
           item={choosedItem}
+        />  
+        <NewTransaction
+          FontAwesomeIcon={FontAwesomeIcon}
+          modal={modalTransaction}
+          setModal={setModalTransaction}
+          fetchData={fetchData}
+          type={transactionType}
+        />
+        <NewPayment
+          visible={false}
+          FontAwesomeIcon={FontAwesomeIcon}
+          modal={modalPayment}
+          setModal={setModalPayment}
+          fetchData={fetchData}
+          cardSelected={cardSelected}
         /> 
-        {/* <NewPayment
-            type={modalType} 
-            setCurrentModal={setModal} 
-            currentModal={modal}
-            fetchData={fetchData}
-        /> */}
         <AppBar />
         <ScrollView style={{paddingBottom: 100}}>
               <DataTable>
 
                 <Card.Content style={{paddingTop: 10, paddingRight: 0}}>
-                    <View style={{flexDirection: 'row'}}>
+                    {/* <View style={{flexDirection: 'row'}}>
                       <TextInput
                           mode="contained"
                           label="Busca"
@@ -77,8 +141,8 @@ return (
                           value={search}
                           onChangeText={(search) => searchFunction(search)}
                       />
-                    </View>
-                    {items.slice(from, to).map((item) => (
+                    </View> */}
+                    {items.map((item) => (
                       <DataTable.Row key={item._id} style={{width: '95%'}}>
                         <CardsItem 
                           edit={true} 
@@ -87,6 +151,10 @@ return (
                           FontAwesomeIcon={FontAwesomeIcon}
                           confirmDelete={confirmDelete}
                           editItem={editItem}
+                          modalPayment={modalPayment}
+                          setModalPayment={setModalPayment}
+                          fetchData={fetchData}
+                          setCard={setCardSelected}
                         />
                       </DataTable.Row>
                     ))}
@@ -134,7 +202,7 @@ return (
                 />
               </View>
               </TouchableOpacity>
-        <BottomBar/>
+        <BottomBar setModal={setModalTransaction} setModalType={setTransactionType} fetchCards={fetchCards} fetchData={fetchData}/>
     </>
 );
 }

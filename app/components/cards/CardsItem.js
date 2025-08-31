@@ -4,7 +4,6 @@ import { Text } from 'react-native-paper';
 import Theme from '../../theme';
 
 import { faCreditCard, faDeleteLeft, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import NewPayment from '../dash/newPayment';
 
 const CardsItem = (props) => {
   const {item} = props;
@@ -17,13 +16,6 @@ const CardsItem = (props) => {
     props.setModalPayment(true);
   }
   return <>
-
-    <NewPayment
-      FontAwesomeIcon={props.FontAwesomeIcon}
-      modal={props.modalPayment}
-      setModal={props.setModalPayment}
-      fetchData={props.fetchData}
-    /> 
     <View style={{ flex: 1, width: '100%',backgroundColor: ''}}>
         <View style={[Theme.CardGeral, {marginTop: 15}]}>
             <View style={[Theme.ElementoCardGeral, {flex: 15}]}>
