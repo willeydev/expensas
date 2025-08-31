@@ -10,12 +10,14 @@ import AppBar from "../AppBar";
 import BottomBar from "../BottomBar";
 import ConfirmDialog from "../confirmDialog";
 import AccountsItem from "./AccountsItem";
+import EditBank from "./editBank";
 import NewBank from "./newBank";
 
 const Accounts = () => {
 
     const toast = useToast();
     const [modalBank, setModalBank] = useState(false);
+    const [modalEditBank, setModalEditBank] = useState(false);
 
     const [page, setPage] = useState(0);
     const [numberOfItemsPerPageList] = useState([1000]);
@@ -61,8 +63,9 @@ const Accounts = () => {
       setVisibleDialog(true);
     }
 
-    const editItem = async () => {
-      
+    const editItem = async (item) => {
+      setChoosedItem(item);
+      setModalEditBank(true);
     }
 
     useEffect(() => {
@@ -77,6 +80,13 @@ const Accounts = () => {
               setModal={setModalBank} 
               modal={modalBank} 
               fetchData={fetchData}
+            />  
+            <EditBank 
+              FontAwesomeIcon={FontAwesomeIcon}
+              setModal={setModalEditBank} 
+              modal={modalEditBank} 
+              fetchData={fetchData}
+              item={choosedItem}
             />  
             <ConfirmDialog 
               confirmAction={deleteItem} 
