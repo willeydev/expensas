@@ -5,10 +5,12 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Card, DataTable, Text } from "react-native-paper";
 import { useToast } from "react-native-toast-notifications";
 import { deleteAccount, getAccounts } from "../../services/accountService";
+import { getCards } from '../../services/cardService';
 import Theme from "../../theme";
 import AppBar from "../AppBar";
 import BottomBar from "../BottomBar";
 import ConfirmDialog from "../confirmDialog";
+import NewTransaction from "../transactions/newTransaction";
 import AccountsItem from "./AccountsItem";
 import EditBank from "./editBank";
 import NewBank from "./newBank";
@@ -45,6 +47,15 @@ const Accounts = () => {
         setItems(response.data.data)
         console.log
     }
+
+    const fetchCards = async () => {
+      const response = await getCards(2, 0);
+      setCards(response.data.data);
+    }
+
+    // For all compoents with bottom bar
+    const [modalTransaction, setModalTransaction] = useState(false);
+    const [transactionType, setTransactionType] = useState('');
 
     const deleteItem = async () => {
 
@@ -93,7 +104,14 @@ const Accounts = () => {
               visible={visibleDialog} 
               setVisible={setVisibleDialog}
               item={choosedItem}
-            /> 
+            />
+            <NewTransaction
+              FontAwesomeIcon={FontAwesomeIcon}
+              modal={modalTransaction}
+              setModal={setModalTransaction}
+              fetchData={fetchData}
+              type={transactionType}
+            />
             <AppBar />
             <ScrollView style={{paddingBottom: 100}}>
                   <DataTable>
@@ -166,7 +184,7 @@ const Accounts = () => {
                   </View>
                   </TouchableOpacity>
                 
-            <BottomBar/>
+            <BottomBar setModal={setModalTransaction} setModalType={setTransactionType} fetchCards={fetchCards} fetchData={fetchData}/>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start', position: 'absolute', bottom: 0}}>
             </View>
         </>
