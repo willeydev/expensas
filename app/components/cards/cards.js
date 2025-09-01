@@ -14,6 +14,7 @@ import { useToast } from "react-native-toast-notifications";
 import { deleteCard, getCards } from '../../services/cardService';
 import NewPayment from "../dash/newPayment";
 import NewTransaction from "../transactions/newTransaction";
+import EditCreditCard from "./EditCreditCard";
 
 const Cards = ({props}) => {
 
@@ -88,6 +89,7 @@ const [transactionType, setTransactionType] = useState('');
     }
 
     const editItem = async (item) => {
+      console.log(item);
       setChoosedItem(item);
       setModalEditCard(true);
     }
@@ -105,6 +107,13 @@ return (
           setModal={setModalCard}
           fetchData={fetchData}
         /> 
+        <EditCreditCard
+          FontAwesomeIcon={FontAwesomeIcon}
+          setModal={setModalEditCard} 
+          modal={modalEditCard} 
+          fetchData={fetchData}
+          item={choosedItem}
+        />  
         <ConfirmDialog 
           confirmAction={deleteItem} 
           visible={visibleDialog} 

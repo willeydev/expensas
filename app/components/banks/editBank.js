@@ -62,7 +62,6 @@ const EditBank = (props) => {
     }
 
   useEffect(() => {
-    console.log(props.item)
     setName(props.item.name)
     setSelectedBank(props.item.bankCode)
   }, [props.item]);

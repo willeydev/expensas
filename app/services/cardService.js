@@ -32,8 +32,16 @@ async function deleteCard(id) {
     return response;
 }
 
+async function updateCard(data) {
+    const response = axios.put(API_URL+"/credit_cards/"+data.id, data, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    return response;
+}
+
 module.exports = {
     createCreditCard,
     getCards,
-    deleteCard
+    deleteCard,
+    updateCard
 }

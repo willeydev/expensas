@@ -15,8 +15,8 @@ const App = () => {
         <MyProvider>
         <SafeAreaProvider>
           <SafeAreaView style={{paddingBottom: insets.bottom + 16, flex: 1, backgroundColor: Theme.Colors.Background}}>
-            <Cards/>
             {/* <Accounts/> */}
+            <Cards/>
             {/* <Dash/> */}
             {/* <Login setIsLoggedIn={setIsLoggedIn} /> */}
           </SafeAreaView>
