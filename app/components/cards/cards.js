@@ -182,7 +182,7 @@ return (
                 style={[styles.button, isHovered && styles.buttonHovered]}
                 onPressIn={() => setIsHovered(true)}
                 onPressOut={() => setIsHovered(false)}
-                onPress={() => openNewCreditCard('create')}
+                onPress={() => setModalCard(true)}
             >
               <View
                 style={{
