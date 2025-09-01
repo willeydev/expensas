@@ -38,7 +38,7 @@ const CardsItem = (props) => {
                 
             </View>
             
-            { props.edit ? <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'row'}]}>
+            <View style={[Theme.ElementoCardGeral, {flex: 0, flexDirection: 'column'}]}>
                 <TouchableOpacity
                     style={[styles.button, isHovered && styles.buttonHovered]}
                     onPressIn={() => setIsHovered(true)}
@@ -60,10 +60,10 @@ const CardsItem = (props) => {
                     <props.FontAwesomeIcon
                         size={22}
                         icon={faDeleteLeft}
-                        style={{color: Theme.Colors.FontColor1}}
+                        style={{color: Theme.Colors.FontColor1, marginTop: 10}}
                     />
                 </TouchableOpacity>
-            </View> : null }
+            </View>
         </View>
             <TouchableOpacity
                     style={[styles.button, isHovered && styles.buttonHovered]}

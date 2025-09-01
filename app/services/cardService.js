@@ -22,7 +22,18 @@ async function getCards(limit, offset) {
     return response;
 }
 
+async function deleteCard(id) {
+    const response = await axios.delete(`${API_URL}/credit_cards/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    });
+    
+    return response;
+}
+
 module.exports = {
     createCreditCard,
-    getCards
+    getCards,
+    deleteCard
 }

@@ -51,10 +51,10 @@ const Accounts = () => {
       const response = await deleteAccount(choosedItem.id)
 
       if(response.status === 204) {
-        toast.show('Conta apagada.', { type: 'success' });
-        props.fetchData();
+        toast.show('Cartão apagada.', { type: 'success' });
+        fetchData();
       } else {
-        toast.show('Erro ao apagar conta.', { type: 'error' });
+        toast.show('Erro ao apagar cartão.', { type: 'error' });
       }
     }
 

@@ -11,7 +11,7 @@ import CardsItem from "./CardsItem";
 import NewCreditCard from "./newCreditCard";
 
 import { useToast } from "react-native-toast-notifications";
-import { getCards } from '../../services/cardService';
+import { deleteCard, getCards } from '../../services/cardService';
 import NewPayment from "../dash/newPayment";
 import NewTransaction from "../transactions/newTransaction";
 
@@ -72,11 +72,11 @@ const [transactionType, setTransactionType] = useState('');
 
     const deleteItem = async () => {
 
-      const response = await deleteAccount(choosedItem.id)
+      const response = await deleteCard(choosedItem.id)
 
       if(response.status === 204) {
         toast.show('Conta apagada.', { type: 'success' });
-        props.fetchData();
+        fetchData();
       } else {
         toast.show('Erro ao apagar conta.', { type: 'error' });
       }
