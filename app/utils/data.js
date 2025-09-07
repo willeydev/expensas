@@ -7,6 +7,31 @@ function formatDate(day = null, month = null, year = null) {
  
 }
 
+function formatDateTransactions(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function monthRange() {
+    const today = new Date();
+
+    // Primeiro dia do mês
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // Último dia do mês (pegando dia 0 do mês seguinte)
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
+    firstDayDate = formatDateTransactions(firstDay);
+    lastDayDate = formatDateTransactions(lastDay);
+
+    return {
+        first: firstDayDate,
+        last: lastDayDate
+    }
+}
+
 function getLastDayOfMonth(year, month) {
     var date = new Date(`${year}-${month}`);
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -168,7 +193,8 @@ module.exports = {
     parseDateToObj,
     parseDateToBr,
     monthDifference,
-    dateToServer
+    dateToServer,
+    monthRange
 }
 
 

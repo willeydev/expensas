@@ -9,8 +9,8 @@ import DataTableItem from './dataTableItem';
 
 import { useToast } from 'react-native-toast-notifications';
 
-import { getTransactions } from '../../services/transactionService';
-import { getMonth, getYear } from '../../utils/data';
+import { deleteTransaction, getTransactions } from '../../services/transactionService';
+import { getMonth, getYear, monthRange } from '../../utils/data';
 import ConfirmDialog from '../confirmDialog';
 import NewTransaction from './newTransaction';
 
@@ -53,12 +53,31 @@ const Transactions = () => {
   const [visibleDialog, setVisibleDialog] = useState(false);
   const [visibleDialog2, setVisibleDialog2] = useState(false);
   const [textConfirmDialog, setTextConfirmDIalog] = useState(false);
+  const [updateType, setUpdateType] = useState('current');
+  const [updateOptions, setUpdateOptions] = useState(null);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState(null);
 
   const toast = useToast();
 
-  const filterByChip = (index) => {
-    setSelectedChip(index);
-  }
+  const updateOptionsBase = [
+      {
+        label: 'Apenas esta',
+        value: 'current'
+      },
+      {
+        label: 'Incluir futuras',
+        value: 'previous'
+      },
+      {
+        label: 'Incluir passadas',
+        value: 'next'
+      },
+      {
+        label: 'Todas',
+        value: 'all'
+      }
+    ];
 
   const [modal, setModal] = useState('');
   const [modalType, setModalType] = useState('');
@@ -75,7 +94,8 @@ const Transactions = () => {
   }
 
   const fetchData = async () => {
-    const response = await getTransactions(200, 0);
+
+    const response = await getTransactions(200, 0, startDate, endDate);
     console.log(response.data.data);
     setItems(response.data.data);
   }
@@ -85,7 +105,15 @@ const Transactions = () => {
   }
   
   const confirmDelete = (item) => {
-    
+    setUpdateType('current');
+    setVisibleDialog(true);
+    setChoosedItem(item);
+    if(item.fixed) {
+      console.log(item);
+      setUpdateOptions(updateOptionsBase);
+    } else {
+      setUpdateOptions(null);
+    }
   }
 
   const confirmChangeEffected = (item) => {
@@ -96,9 +124,21 @@ const Transactions = () => {
 
   }
   
-  const deleteItem = () => {
+  const deleteItem = async () => {
+    const obj = {
+      id: choosedItem.id,
+      update_type: updateType
+    }
+    
+    const response = await deleteTransaction(obj);
 
-  };
+    if(response.status === 200) {
+      toast.show('Transanção deletada.', { type: 'success' });
+      fetchData();
+    }else {
+      toast.show('Erro ao deletar transação.', { type: 'error' });
+    }
+  }
 
   const openNewTransaction = (type) => {
     props.setModal(true)
@@ -107,6 +147,8 @@ const Transactions = () => {
 
   useEffect(() => {
 
+    setStartDate(monthRange().first);
+    setEndDate(monthRange().last);
     setPage(0);
 
     if(filteredMonth || filteredYear || receipt || place || cardSelected || accountSelected || categorySelected || effected) {
@@ -115,7 +157,7 @@ const Transactions = () => {
       fetchData();
     }
     
-  }, [itemsPerPage, filteredMonth, filteredYear, receipt, place, cardSelected, accountSelected, categorySelected, effected]);
+  }, [startDate, endDate, itemsPerPage, filteredMonth, filteredYear, receipt, place, cardSelected, accountSelected, categorySelected, effected]);
 
   return (
     <>
@@ -155,6 +197,8 @@ const Transactions = () => {
       item={choosedItem}
       text={textConfirmDialog}
       title="Excluir"
+      updateOptions={updateOptions}
+      setUpdateType={setUpdateType}
     /> 
     <ConfirmDialog
       confirmAction={changeEffected}
@@ -204,6 +248,7 @@ const Transactions = () => {
                 confirmDelete={confirmDelete}
                 confirmChangeEffected={confirmChangeEffected}
                 editItem={editItem}
+
                 FontAwesomeIcon={FontAwesomeIcon}
                 setIsEffe
               />

@@ -88,7 +88,7 @@ const category_name = item.category_name ? item.category_name : 'Outras';
         
         onPressIn={() => setIsHovered(true)}
         onPressOut={() => setIsHovered(false)}
-        onPress={() => deleteTransaction(item)}
+        onPress={() => props.confirmDelete(item)}
         >
         <Text style={{color: Theme.Colors.FontColor1, marginTop: 7, marginRight: 10}}>
             <FontAwesomeIcon

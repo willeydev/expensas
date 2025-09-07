@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { View } from 'react-native';
-import { Button, Dialog, Portal, PaperProvider, Text } from 'react-native-paper';
+import { Button, Dialog, PaperProvider, Portal, Text } from 'react-native-paper';
+import InputSelect from './inputSelect';
 
 const ConfirmDialog = (props) => {
 
@@ -28,6 +28,18 @@ const ConfirmDialog = (props) => {
             <Dialog.Actions>
               <Button onPress={hideDialog}>Não</Button>
               <Button onPress={confirm}>Sim</Button>
+
+              { props.updateOptions ? 
+                <InputSelect
+                  items={props.updateOptions}
+                  label={props.updateOptions[0].label}
+                  setValue={props.setUpdateType}
+                  mode='create'
+                  customStyle={{marginLeft: -5, maxHeight: '50%'}}
+                  
+                /> : null
+
+              }
             </Dialog.Actions>
           </Dialog>
         </Portal>
