@@ -112,6 +112,7 @@ const NewTransaction = (props) => {
       recurrent: isDivided || isRecurrent,
       fixed: isRecurrent
     };
+  
     const response = await createTransaction(transaction)
     
     if(response.status === 201) {

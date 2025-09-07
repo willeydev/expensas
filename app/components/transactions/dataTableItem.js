@@ -1,6 +1,6 @@
-import { faCreditCard, faDeleteLeft, faPenToSquare, faPiggyBank } from '@fortawesome/free-solid-svg-icons';
+import { faCreditCard, faDeleteLeft, faPenToSquare, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { Switch } from 'react-native-paper';
 import Theme from '../../theme';
 
@@ -18,42 +18,45 @@ const category_name = item.category_name ? item.category_name : 'Outras';
     <>
     <View style={{flex: 1, marginTop: 10}}>
     <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
-    <Text style={[Theme.Colors.FontColor1, {fontSize: 18, color: Theme.Colors.FontColor1}]}>
-        {item.name.length > 0 ? item.name: category_name }
+    <Text style={{color: Theme.Colors.FontColor1, fontSize: 18, color: Theme.Colors.FontColor1}}>
+        {item.name?.length > 0 ? item.name: category_name }
          
     </Text>
-    <Text style={[Theme.Colors.FontColor1, { fontSize: 17, color: item.isReceipt ? Theme.Colors.Green1 : Theme.Colors.Red1 }]}>
+    <Text style={{color: Theme.Colors.FontColor1, fontSize: 17, color: item.type === 'receipt' ? Theme.Colors.Green1 : Theme.Colors.Red1 }}>
         R$ {item.isDivided ? item.installmentValue : item.amount}
     </Text>
     </View>
     <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5}}>
-    <Text style={{color: Theme.Colors.FontColor1}}>
-        {item.card_name.lenth > 0 ? 
+    <View style={{color: Theme.Colors.FontColor1, display: 'flex', flexDirection: 'row'}}>
+        {item.credit_card_id ? 
         
         <>
             <FontAwesomeIcon
                 size={20}
                 icon={faCreditCard}
-                style={{color: Theme.Colors.FontColor1,}}
+                style={{color: Theme.Colors.FontColor1, marginRight: 5}}
             />
-        {item.card_name}
+
         </>  
         :
         <>
         <FontAwesomeIcon
             size={20}
-            icon={faPiggyBank}
+            icon={faWallet}
             style={{color: Theme.Colors.FontColor1, marginRight: 5}}
         />
         </>
-        } {item.card_name.length == 0 ? item.account_name : null } - {category_name} {item.isDivided ? '| Parcelada' : null} {item.isRecurrent ? '| Recorrente' : null}
-    </Text>
+        }
+        <Text style={{marginTop: 2}}>
+            {category_name} {item.isDivided ? '| Parcelada' : null} {item.fixed ? '| Fixa' : null}
+        </Text>
+    </View>
     <View style={{flexDirection: 'row', justifyContent: 'space-between', color: Theme.Colors.FontColor2}}>
     { 
         !item.isCard ?
             <Switch 
                 style={
-                    {marginRight: 8, marginTop: 3}
+                    {marginRight: 12, marginTop: 8}
                 }
                 onTouchStart={() => {
                     setIsEffected(!item.isEffected);
@@ -68,7 +71,7 @@ const category_name = item.category_name ? item.category_name : 'Outras';
     
     }
     <TouchableOpacity
-        style={[styles.button, isHovered && styles.buttonHovered]}
+        
         onPressIn={() => setIsHovered(true)}
         onPressOut={() => setIsHovered(false)}
         onPress={() => props.editItem(item)}
@@ -82,7 +85,7 @@ const category_name = item.category_name ? item.category_name : 'Outras';
         </Text>
     </TouchableOpacity>
     <TouchableOpacity
-        style={[styles.button, isHovered && styles.buttonHovered]}
+        
         onPressIn={() => setIsHovered(true)}
         onPressOut={() => setIsHovered(false)}
         onPress={() => deleteTransaction(item)}
@@ -107,7 +110,5 @@ const category_name = item.category_name ? item.category_name : 'Outras';
     </>
   );
 };
-
-const styles = StyleSheet.create(Theme.BtnHover);
 
 export default DataTableItem;
