@@ -1,5 +1,5 @@
 import { faCreditCard, faDeleteLeft, faPenToSquare, faWallet } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Switch } from 'react-native-paper';
 import Theme from '../../theme';
@@ -7,12 +7,18 @@ import Theme from '../../theme';
 const DataTableItem = (props) => {  
 
 const [isHovered, setIsHovered] = useState(false);
-const [isEffected, setIsEffected] = useState(null);
+const [isEffected, setIsEffected] = useState(true);
 
 const {item} = props;
 const FontAwesomeIcon = props.FontAwesomeIcon;
 const [checked, setChecked] = useState(false);
 const category_name = item.category_name ? item.category_name : 'Outras';
+
+useEffect(() => {
+    setIsEffected(item.dueEffectedDate ? true : false);
+
+}, [item]);
+
 
   return (
     <>
@@ -53,18 +59,14 @@ const category_name = item.category_name ? item.category_name : 'Outras';
     </View>
     <View style={{flexDirection: 'row', justifyContent: 'space-between', color: Theme.Colors.FontColor2}}>
     { 
-        !item.isCard ?
+        !item.credit_card_id ?
             <Switch 
-                style={
-                    {marginRight: 12, marginTop: 8}
-                }
-                onTouchStart={() => {
-                    setIsEffected(!item.isEffected);
-                    item.isEffected = !item.isEffected;
-                    props.confirmChangeEffected(item)
-                }} 
-                value={item.isEffected} 
-                color={Theme.Colors.Green1} 
+                style={{ marginRight: 12, marginTop: 8 }}
+                value={isEffected}
+                onValueChange={(newValue) => {
+                    props.confirmChangeEffected(item);
+                }}
+                thumbColor={Theme.Colors.Green1}
             />
 
         : null

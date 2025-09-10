@@ -12,6 +12,13 @@ async function createTransaction(data) {
     return response;
 }
 
+async function changeStatusTransaction(data) {
+    const response = axios.post(API_URL+"/payment_details/effective/"+data.id, data, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    });
+    return response;
+}
+
 async function deleteTransaction(data) {
     const response = axios.post(API_URL+"/payment_details/update_delete/"+data.id, data, {
       headers: { Authorization: `Bearer ${getToken()}` }
@@ -32,5 +39,6 @@ async function getTransactions(limit, offset, startDate, endDate) {
 module.exports = {
     createTransaction,
     getTransactions,
-    deleteTransaction
+    deleteTransaction,
+    changeStatusTransaction
 }

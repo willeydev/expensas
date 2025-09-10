@@ -9,7 +9,7 @@ import DataTableItem from './dataTableItem';
 
 import { useToast } from 'react-native-toast-notifications';
 
-import { deleteTransaction, getTransactions } from '../../services/transactionService';
+import { changeStatusTransaction, deleteTransaction, getTransactions } from '../../services/transactionService';
 import { getMonth, getYear, monthRange } from '../../utils/data';
 import ConfirmDialog from '../confirmDialog';
 import NewTransaction from './newTransaction';
@@ -117,11 +117,23 @@ const Transactions = () => {
   }
 
   const confirmChangeEffected = (item) => {
-
+    console.log(item);
+    setVisibleDialog2(true);
+    let word = !item.dueEffectedDate ? 'não efetivada' : 'efetivada';
+    setTextConfirmDIalog(`Tem certeza que deseja alterar o status de ${word}?`);
+    setVisibleDialog2(true);
+    setChoosedItem(item);
   }
 
   const changeEffected = async () => {
+    const response = await changeStatusTransaction(choosedItem)
 
+    if(response.status === 200) {
+      toast.show('Status atualizado.', { type: 'success' });
+      fetchData();
+    } else {
+      toast.show('Erro ao registrar mudança.', { type: 'error' });
+    }
   }
   
   const deleteItem = async () => {
@@ -241,7 +253,7 @@ const Transactions = () => {
         <DataTable style={{marginTop: 20}}>
 
           {items.map((item) => (
-            <DataTable.Row key={item._id} style={{width: '95%'}}> 
+            <DataTable.Row key={item.id} style={{width: '95%'}}> 
               <DataTableItem 
                 item={item} 
                 edit={true} 
