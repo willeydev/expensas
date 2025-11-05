@@ -5,10 +5,12 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useToast } from 'react-native-toast-notifications';
 import logo from '../../../assets/images/logo.png';
 
+import Env from '../../../env';
 import Theme from '../../theme';
 
 export default function Login({ setIsLoggedIn }) {
-  const apiUrl = 'https://expensas.waantec.com.br/expensas-php/public/api';
+  const apiUrl = Env.apiUrl
+  
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
